@@ -109,7 +109,8 @@ void traitementCommande(char tab[4][16]){
 	char *numReg = (char*)malloc(sizeof(char)*2);
 	int numRegI;
 
-	if(strcmp(tab[0], "ADD") == 0){
+	if(strcmp(tab[0], "ADD") == 0 || strcmp(tab[0], "AND") == 0 || strcmp(tab[0], "OR") == 0 ||		/* Regroupe toutes les trames speciales */
+		strcmp(tab[0], "XOR") == 0 || strcmp(tab[0], "SUB") == 0 || strcmp(tab[0], "SLT") == 0){	/* qui ont 3 registres comme parametre  */
 		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '$'){
 			strcat(result, "000000");
 
@@ -127,23 +128,144 @@ void traitementCommande(char tab[4][16]){
 
 			strcat(result, "00000");
 
-			strcat(result, "100000");
+			if(strcmp(tab[0], "ADD") == 0)
+				strcat(result, "100000");
+			else if(strcmp(tab[0], "AND") == 0)
+				strcat(result, "100100");
+			else if(strcmp(tab[0], "OR") == 0)
+				strcat(result, "100101");
+			else if(strcmp(tab[0], "XOR") == 0)
+				strcat(result, "100110");
+			else if(strcmp(tab[0], "SUB") == 0)
+				strcat(result, "100010");
+			else if(strcmp(tab[0], "SLT") == 0)
+				strcat(result, "101010");
+			else{
+				printf("%s\n", "Erreur");
+				exit(1);
+			}
 
 			printf("%s\n", result);
 
 		}
 		else{
-			printf("%s\n", "Erreur : parametres de ADD");
+			printf("%s\n", "Erreur : parametres");
+			exit(1);
 		}
 	}
-}
+	else if(strcmp(tab[0], "DIV") == 0 || strcmp(tab[0], "MULT") == 0){		/* Groupe les speciaux qui ont 	*/
+		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '\0'){		/* deux registres en parametres */
+			strcat(result, "000000");
+
+			numReg = substr(tab[1], 1, strlen(tab[1]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+
+			numReg = substr(tab[2], 1, strlen(tab[2]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+
+			strcat(result, "0000000000");
+
+			if(strcmp(tab[0], "DIV") == 0)
+				strcat(result, "011010");
+			else if(strcmp(tab[0], "MULT") == 0)
+				strcat(result, "011000");
+
+
+			printf("%s\n", result);
+		}
+		else
+			printf("%s\n", "Erreur : parametres");
+
+	}
+	else if(strcmp(tab[0], "MFHI") == 0 || strcmp(tab[0], "MFLO") == 0){		/* Groupe les speciaux qui ont 	*/
+		if(tab[1][0] == '$' && tab[2][0] == '\0' && tab[3][0] == '\0'){			/* un registre en parametres	*/
+			strcat(result, "0000000000000000");
+
+			numReg = substr(tab[1], 1, strlen(tab[1]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+
+			strcat(result, "00000");
+
+			if(strcmp(tab[0], "MFLO") == 0)
+				strcat(result, "010010");
+			else if(strcmp(tab[0], "MFHI") == 0)
+				strcat(result, "010000");
+
+			printf("%s\n", result);
+		}
+		else
+			printf("%s\n", "Erreur : parametres");
+	}
+	else if(strcmp(tab[0], "SLL") == 0){
+		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '#'){
+			strcat(result, "00000000000");
+
+			numReg = substr(tab[2], 1, strlen(tab[2]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+
+			numReg = substr(tab[1], 1, strlen(tab[1]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+
+			numReg = substr(tab[3], 1, strlen(tab[3])); /* Ici, ce n'est pas un registre 		*/
+			numRegI = atoi(numReg);						/* mais on utilise quand meme le tab 	*/
+			strcat(result, regBits[numRegI]);			/* des reg pour faire la conversion 	*/
+														/* car c'est un entier de 32 bits 		*/
+			strcat(result, "000000");
+
+			printf("%s\n", result);
+		}
+		else
+			printf("%s\n", "Erreur : parametres");					
+	}
+	else if(strcmp(tab[0], "SRL") == 0){
+		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '#'){
+			strcat(result, "00000000000");
+
+			numReg = substr(tab[2], 1, strlen(tab[2]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+
+			numReg = substr(tab[1], 1, strlen(tab[1]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+
+			numReg = substr(tab[3], 1, strlen(tab[3])); /* Ici, ce n'est pas un registre 		*/
+			numRegI = atoi(numReg);						/* mais on utilise quand meme le tab 	*/
+			strcat(result, regBits[numRegI]);			/* des reg pour faire la conversion 	*/
+														/* car c'est un entier de 32 bits 		*/
+			strcat(result, "000010");
+
+			printf("%s\n", result);
+		}
+		else
+			printf("%s\n", "Erreur : parametres");					
+	}
+	/* else if(strcmp(tab[0], "JR") == 0) */
+	else if(strcmp(tab[0], "NOP") == 0){
+		if(tab[1][0] == '\0' && tab[2][0] == '\0' && tab[3][0] == '\0'){
+			strcat(result, "00000000000000000000000000000000");
+
+			printf("%s\n", result);
+		}
+		else
+			printf("%s\n", "Erreur : parametres");
+	}
+	else
+		printf("%s%s\n", "Erreur : je ne connais pas l'instruction ", tab[0]);
+
+}	
 
 
 int main(int argc, char **argv){
 
 
 	char tab[NBOPERANDE][TAILLEOPERANDE];
-	char *test = "ADD $1,$2,$3";
+	char *test = "MULT $3,$15";
 	stringSplit(test, tab);
 	traitementCommande(tab);
 	

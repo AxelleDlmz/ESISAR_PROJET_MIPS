@@ -1,26 +1,26 @@
 SPECIALS:
 #Arithmetic
-ADD	100000 #add 	$d, $s, $t 	-> $d = $s + $t 
-AND	100100 #and 	$d, $s, $t 	-> $d = $s & $t 
-OR	100101 #or  	$d, $s, $t 	-> $d = $s | $t 
-XOR	100110 #xor 	$d, $s, $t 	-> $d = $s ^ $t
+ADD	100000 #add 	$d, $s, $t 	-> $d = $s + $t  d
+AND	100100 #and 	$d, $s, $t 	-> $d = $s & $t  d
+OR	100101 #or  	$d, $s, $t 	-> $d = $s | $t  d
+XOR	100110 #xor 	$d, $s, $t 	-> $d = $s ^ $t  d
 
 #Multiply
-DIV	011010 #div 	$s, $t		-> lo = $s / $t; hi = $s % $t
-SUB	100010 #sub 	$d, $s, $t	-> $d = $s - $t
-MFHI	010000 #mfhi	$d		-> $d = hi
-MFLO	010010 #mflo	$d		-> $d = lo 
-MULT	011000 #mult	$s, $t		-> hi:lo = $s * $t
+DIV	011010 #div 	$s, $t		-> lo = $s / $t; hi = $s % $t  d
+SUB	100010 #sub 	$d, $s, $t	-> $d = $s - $t  d
+MFHI	010000 #mfhi	$d		-> $d = hi  d
+MFLO	010010 #mflo	$d		-> $d = lo  d
+MULT	011000 #mult	$s, $t		-> hi:lo = $s * $t  d
 
 #Shifters
-ROTR	000010
-SLL	000000 #sll	$d, $t, a 	-> $d = $t << a 
-SLT	101010 #slt	$d, $s, $t 	-> $d = ($s < $t)
-SRL	000010 #srl	$d, $t, a	-> $d = $t >>> a
+ROTR	000010 SUCE
+SLL	000000 #sll	$d, $t, a 	-> $d = $t << a  d
+SLT	101010 #slt	$d, $s, $t 	-> $d = ($s < $t)  d
+SRL	000010 #srl	$d, $t, a	-> $d = $t >>> a  d
 
 #Branch
-JR	001000 #jr	o labelR 	-> pc = $s 
-SYSCALL	001100 #syscall 		-> osef
+JR	001000 #jr	o labelR 	-> pc = $s  todo
+SYSCALL	001100 #syscall 		-> osef		todo
 
 #No name :'(
 NOP	000000 #nop			-> do nothing
