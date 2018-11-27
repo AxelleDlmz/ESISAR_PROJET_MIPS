@@ -1,5 +1,6 @@
 all: main.o tools.o
-	gcc -o main main.o
+	gcc main.o -o main
+	gcc tools.o -o tools
 	
 main.o: main.c
 	gcc -c main.c -Wall -pedantic -o main.o
