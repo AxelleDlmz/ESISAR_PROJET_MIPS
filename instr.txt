@@ -23,7 +23,7 @@ JR	001000 #jr	o labelR 	-> pc = $s  todo
 SYSCALL	001100 #syscall 		-> osef		todo
 
 #No name :'(
-NOP	000000 #nop			-> do nothing
+NOP	000000 #nop			-> do nothing  d
 
 NORMALS:
 #Arithmetic

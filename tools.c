@@ -56,8 +56,12 @@ void ConvertirEnHexa(char * binaire, char * retour){
 int main(int argc, char const *argv[])
 {
 	char retour[10];
-	ConvertirEnHexa("1100",retour);
-	printf("(%i)\n",Puissance(2,3) );
+	/*ConvertirEnHexa("1100",retour);
+	printf("(%i)\n",Puissance(2,3) );*/
+	ConvertirEnHexa("00000000010010010000100000100000",retour);
+
+	//490820
+
 	return 0;
 
 }

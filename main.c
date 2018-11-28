@@ -13,32 +13,6 @@
 		- fautes "eliminatoire"
 */
 
-char *opStrNorm[10] = {
-		"ADDI", "BEQ" , "BGTZ", "BLEZ", 
-		"BNE" , "J"	  , "JAL" , "LUI" ,
-		"LW"  , "SW"  
-	};
-
-	char *opStrSpecial[16] = {
-		"ADD" , "AND" , "DIV" , "JR"  , 
-		"MFHI", "MFLO", "MULT", "NOP" ,
-		"OR"  , "ROTR", "SLL" , "SLT" , 
-		"SRL" , "SUB" , "SYSCALL", "XOR"
-	};
-
-	char *opBitsNorm[10] = {
-		"001000", "000100", "000111", "000110",
-		"000101", "000010", "000011", "001111",
-		"100011", "101011"
-	};
-
-	char *opBitsSpecial[16] = {
-		"100000", "100100", "011010", "001000",
-		"010000", "010010", "011000", "000000",
-		"100101", "000010", "000000", "101010",
-		"000010", "100010", "001100", "100110"
-	};
-
 	char *regBits[32] = {
 		"00000", "00001", "00010", "00011",
 		"00100", "00101", "00110", "00111",
@@ -65,8 +39,24 @@ char *substr(char *src,int pos,int stopInd) {
     if(NULL != dest) {
         strncat(dest,src+pos,stopInd);            
     }
-  }                                       
+  }              
+  //free(dest);     
   return dest;
+}
+
+void BinToHex(char *binaire, char *retour){
+	char * tmp;
+	int ret, cpt;
+	ret = strtoul(binaire, &tmp ,2);
+	tmp = malloc(sizeof(char)*strlen(retour));
+	sprintf(tmp,"%04x",ret);
+
+	for(cpt = strlen(tmp); cpt < 8; cpt++){		/* On fait ça pour combler de 0 	*/
+		strcat(retour, "0");					/* pour avoir une sortie sur 8 bits */
+	}
+	strcat(retour, tmp);
+
+	free(tmp);
 }
 
 
@@ -104,14 +94,16 @@ void stringSplit(char *str, char tab[NBOPERANDE][TAILLEOPERANDE]){
 	str = strCpy;
 }
 
-void traitementCommande(char tab[4][16]){
+char *traitementCommande(char tab[4][16]){
 	char result[32]= "";
+	char resultHex[8] = "";
 	char *numReg = (char*)malloc(sizeof(char)*2);
 	int numRegI;
 
 	if(strcmp(tab[0], "ADD") == 0 || strcmp(tab[0], "AND") == 0 || strcmp(tab[0], "OR") == 0 ||		/* Regroupe toutes les trames speciales */
 		strcmp(tab[0], "XOR") == 0 || strcmp(tab[0], "SUB") == 0 || strcmp(tab[0], "SLT") == 0){	/* qui ont 3 registres comme parametre  */
 		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '$'){
+
 			strcat(result, "000000");
 
 			numReg = substr(tab[2], 1, strlen(tab[2]));
@@ -145,7 +137,7 @@ void traitementCommande(char tab[4][16]){
 				exit(1);
 			}
 
-			printf("%s\n", result);
+			//printf("%s\n", result);
 
 		}
 		else{
@@ -173,10 +165,12 @@ void traitementCommande(char tab[4][16]){
 				strcat(result, "011000");
 
 
-			printf("%s\n", result);
+			//printf("%s\n", result);
 		}
-		else
+		else{
 			printf("%s\n", "Erreur : parametres");
+			exit(1);
+		}
 
 	}
 	else if(strcmp(tab[0], "MFHI") == 0 || strcmp(tab[0], "MFLO") == 0){		/* Groupe les speciaux qui ont 	*/
@@ -194,10 +188,12 @@ void traitementCommande(char tab[4][16]){
 			else if(strcmp(tab[0], "MFHI") == 0)
 				strcat(result, "010000");
 
-			printf("%s\n", result);
+			//printf("%s\n", result);
 		}
-		else
+		else{
 			printf("%s\n", "Erreur : parametres");
+			exit(1);
+		}
 	}
 	else if(strcmp(tab[0], "SLL") == 0){
 		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '#'){
@@ -217,10 +213,12 @@ void traitementCommande(char tab[4][16]){
 														/* car c'est un entier de 32 bits 		*/
 			strcat(result, "000000");
 
-			printf("%s\n", result);
+			//printf("%s\n", result);
 		}
-		else
-			printf("%s\n", "Erreur : parametres");					
+		else{
+			printf("%s\n", "Erreur : parametres");
+			exit(1);
+		}				
 	}
 	else if(strcmp(tab[0], "SRL") == 0){
 		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '#'){
@@ -240,23 +238,65 @@ void traitementCommande(char tab[4][16]){
 														/* car c'est un entier de 32 bits 		*/
 			strcat(result, "000010");
 
-			printf("%s\n", result);
+			//printf("%s\n", result);
 		}
-		else
-			printf("%s\n", "Erreur : parametres");					
+		else{
+			printf("%s\n", "Erreur : parametres");
+			exit(1);
+		}				
 	}
-	/* else if(strcmp(tab[0], "JR") == 0) */
+	else if(strcmp(tab[0], "JR") == 0){
+		if(tab[1][0] == '$' && tab[2][0] == '\0' && tab[3][0] == '\0'){
+			strcat(result, "00000");
+
+			numReg = substr(tab[1], 1, strlen(tab[1]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+
+			strcat(result, "000000000000000");
+
+			strcat(result, "001000");
+
+			//printf("%s\n", result);
+
+		}
+		else{
+			printf("%s\n", "Erreur : parametres");
+			exit(1);
+		}
+
+	} /* TODO SYSCALL */
 	else if(strcmp(tab[0], "NOP") == 0){
 		if(tab[1][0] == '\0' && tab[2][0] == '\0' && tab[3][0] == '\0'){
 			strcat(result, "00000000000000000000000000000000");
 
-			printf("%s\n", result);
+			//printf("%s\n", result);
+		}
+		else{
+			printf("%s\n", "Erreur : parametres");
+			exit(1);
+		}
+	}
+	/*else if(strcmp(tab[0], "J") == 0){ // NORMAL 
+		if(strlen(tab[1]) < 7 && tab[2][0] == '\0' && tab[3][0] == '\0'){
+			strcat(result, "00001000");
+
+
 		}
 		else
 			printf("%s\n", "Erreur : parametres");
-	}
-	else
+	}*/
+	else{
 		printf("%s%s\n", "Erreur : je ne connais pas l'instruction ", tab[0]);
+		exit(1);
+	}
+
+	
+	BinToHex(result, resultHex);
+	printf("%s\n", resultHex);
+
+	free(numReg);
+	return *resultHex;
 
 }	
 
@@ -265,15 +305,22 @@ int main(int argc, char **argv){
 
 
 	char tab[NBOPERANDE][TAILLEOPERANDE];
-	char *test = "MULT $3,$15";
-	stringSplit(test, tab);
+	char *testADD = "ADD $1,$2,$9";
+	char *testDIV = "DIV $16,$31";
+	char *testMFHI = "MFHI $7";
+	char *testSLL = "SLL $2,$5,#15";
+	stringSplit(testADD, tab);
 	traitementCommande(tab);
-	
 
-	/*printf("%s\n",tab[0]);
-	printf("%s\n",tab[1]);
-	printf("%s\n",tab[2]);
-	printf("%s\n",tab[3]);*/
+	stringSplit(testDIV, tab);
+	traitementCommande(tab);
+
+	stringSplit(testMFHI, tab);
+	traitementCommande(tab);
+
+	stringSplit(testSLL, tab);
+	traitementCommande(tab);
+
 
 	return 0;
 }
