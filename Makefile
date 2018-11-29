@@ -1,3 +1,4 @@
+#Makefile Projet Mips
 all: main.o tools.o
 	gcc main.o -lm -o main
 	gcc tools.o -o tools
