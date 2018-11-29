@@ -1,17 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define NBOPERANDE 4
 #define TAILLEOPERANDE 16
 
-/*
-	TODO :
-		- Séparation entre le mode "special" et le mode "normal" dans le switch
-		- creation d'un switch pour chacune des operations
-		- conversion en hex de la chaine binaire
-		- fautes "eliminatoire"
-*/
 
 	char *regBits[32] = {
 		"00000", "00001", "00010", "00011",
@@ -44,6 +38,32 @@ char *substr(char *src,int pos,int stopInd) {
   return dest;
 }
 
+/*
+	nombre = valeur immediate a concatener
+	res    = chaine de bits qui correspond a la trame
+*/
+void ImmediateConcat(int nombre, char res[32]){
+	int i=0;
+	char result[16]="";
+
+	for(i=15;i>=0;i--){
+		if(nombre-pow(2,i) < 0){
+			strcat(result, "0");
+		}
+		else if (nombre- pow(2,i) >=0){
+			strcat(result, "1");
+			nombre =nombre-pow(2,i);
+		}	
+	}
+
+	strcat(res,result);
+	printf("{result}%s\n", res);
+}
+
+/*
+	Prends en parametre un nombre binaire sous forme d'une chaine de char --> "00101100111001"
+	et retourne (dans le parametre retour) une chaine de char au format hexa (sur 8 bits)
+*/
 void BinToHex(char *binaire, char *retour){
 	char * tmp;
 	int ret, cpt;
@@ -277,6 +297,35 @@ char *traitementCommande(char tab[4][16]){
 			exit(1);
 		}
 	}
+	else if (strcmp(tab[0],"ADDI") == 0){ //NORMAL
+		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '#'){
+			strcat(result,"001000");
+
+			numReg = substr(tab[2], 1, strlen(tab[2]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+
+			numReg = substr(tab[1], 1, strlen(tab[1]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+			
+
+
+			char* nombre;
+			int numeroD;
+			nombre = substr(tab[3],1,strlen(tab[3]));
+			numeroD=atoi(nombre);
+			if(numeroD>65535){
+				printf("%s\n","Erreur : Valeur immediate trop grande (>65535)" );
+				exit(1);
+			}
+
+			ImmediateConcat(numeroD, result);
+
+		}
+		else
+			printf("%s\n", "Erreur : parametres");
+	}
 	/*else if(strcmp(tab[0], "J") == 0){ // NORMAL 
 		if(strlen(tab[1]) < 7 && tab[2][0] == '\0' && tab[3][0] == '\0'){
 			strcat(result, "00001000");
@@ -305,7 +354,7 @@ int main(int argc, char **argv){
 
 
 	char tab[NBOPERANDE][TAILLEOPERANDE];
-	char *testADD = "ADD $1,$2,$9";
+	/*char *testADD = "ADD $1,$2,$9";
 	char *testDIV = "DIV $16,$31";
 	char *testMFHI = "MFHI $7";
 	char *testSLL = "SLL $2,$5,#15";
@@ -319,8 +368,14 @@ int main(int argc, char **argv){
 	traitementCommande(tab);
 
 	stringSplit(testSLL, tab);
+	traitementCommande(tab);*/
+
+	char *testADDI = "ADDI $2,$5,#15";
+	stringSplit(testADDI, tab);
 	traitementCommande(tab);
 
 
 	return 0;
 }
+//20a2000f
+//20A20000
