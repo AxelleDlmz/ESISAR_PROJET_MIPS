@@ -24,25 +24,6 @@ int Puissance(int a, int b){
 }
 
 
-// char ConvertirEnHexa(char * binaire){
-// 	int i = 0;
-// 	int res = 0;
-// 	char lettre[] = {'A','B','C','D','E','F'};
-// 	while (binaire[i]!='\0'){
-// 		res += (binaire[i]-'0')*Puissance(2,i);
-// 		printf("%i\n",res);
-// 		i++;
-// 	}
-// 	if(res>9){
-// 		res -= 10;
-// 		printf("%c\n", lettre[res]);
-// 		return lettre[res];
-// 	}else{
-// 		printf("%i\n",  i );
-// 		return (char)i;
-// 	}
-// }
-
 void ConvertirEnHexa(char * binaire, char * retour){
 	char * tmp;
 	int ret;
