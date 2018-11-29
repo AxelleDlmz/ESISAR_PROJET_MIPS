@@ -352,6 +352,11 @@ char *traitementCommande(char tab[4][16]){
 
 int main(int argc, char **argv){
 
+	printf("%s\n","######################" );
+	printf("%s\n","le meilleur groupe" );
+	printf("%s\n","######################" );
+
+
 
 	char tab[NBOPERANDE][TAILLEOPERANDE];
 	/*char *testADD = "ADD $1,$2,$9";
