@@ -33,14 +33,25 @@ void ConvertirEnHexa(char * binaire, char * retour){
 	printf("EN HEXA > %s\n",retour);
 }
 
-void lireUneLigneDuFichier(char * nomDuFichier, char * ligneRetournee){
-
+int lireUneLigneDuFichier(char * nomDuFichier, char * ligneRetournee, long * ptr){
 	FILE * f = fopen(nomDuFichier,"r");
+		if(f != NULL){
+			fseek(f,*ptr, SEEK_SET);
+				if(fgets(ligneRetournee, 1000,f)!=NULL){
+					* ptr = ftell(f);
+					fclose(f);
+					return 1;
+				}else{	//Determine la fin de fichier
+					fclose(f);
+					return -1;
+				}
+		}
+		fclose(f);
+		return -1;
 
-	fgets(ligneRetournee, 1000,f);
-
-	fclose(f);
+		
 }
+		
 
 
 int main(int argc, char const *argv[])
@@ -52,6 +63,13 @@ int main(int argc, char const *argv[])
 
 	//490820
 
+	char ligne[1000];
+	long ptr = 0;
+	int i = 0;
+	while(lireUneLigneDuFichier("./test.txt",ligne, &ptr)!=-1){
+		printf("%s\n",ligne);  	
+		i++;
+	}
 	return 0;
 }
 
