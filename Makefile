@@ -1,5 +1,5 @@
 all: main.o tools.o
-	gcc main.o -o main
+	gcc main.o -lm -o main
 	gcc tools.o -o tools
 	
 main.o: main.c
