@@ -94,7 +94,7 @@ void ImmediateConcat(int nombre, char res[32]){
 	}
 
 	strcat(res,result);
-	printf("{result}%s\n", res);
+	//printf("{result}%s\n", res);
 }
 
 /*
@@ -379,7 +379,7 @@ void traitementCommande(char tab[4][16], char res[8]){
 
 	
 	BinToHex(result, resultHex);
-	printf("%s\n", resultHex);
+	//printf("%s\n", resultHex);
 
 	free(numReg);
 	strcpy(res,resultHex);
@@ -391,38 +391,24 @@ int main(int argc, char **argv){
 
 	char tab[NBOPERANDE][TAILLEOPERANDE];
 	char res[8] = "";
-	char *testADD = "ADD $1,$2,$9";
-	char *testDIV = "DIV $16,$31";
-	char *testMFHI = "MFHI $7";
-	char *testSLL = "SLL $2,$5,#15";
+	char buffer[20] = "";
+	long ptr = 0;
+	char *nomFichier = argv[1];
 
-
-	stringSplit(testADD, tab);
-	traitementCommande(tab, res);
-	if(ecireUneLigneDansLeFichier("./out.txt", res) == -1){
-		printf("%s%s\n", "Erreur : ecriture dans ", "out.txt");
+	if(strcmp(argv[1], NULL) == 0){
+		printf("%s\n", "Erreur : usage ./emul-mips <nom Fichier>");
 		exit(1);
 	}
 
-	stringSplit(testDIV, tab);
-	traitementCommande(tab, res);
-	if(ecireUneLigneDansLeFichier("./out.txt", res) == -1){
-		printf("%s%s\n", "Erreur : ecriture dans ", "out.txt");
-		exit(1);
-	}
 
-	stringSplit(testMFHI, tab);
-	traitementCommande(tab, res);
-	if(ecireUneLigneDansLeFichier("./out.txt", res) == -1){
-		printf("%s%s\n", "Erreur : ecriture dans ", "out.txt");
-		exit(1);
-	}
+	while(lireUneLigneDuFichier(nomFichier, buffer, &ptr) != -1){
+		stringSplit(buffer, tab);
+		traitementCommande(tab, res);
 
-	stringSplit(testSLL, tab);
-	traitementCommande(tab, res);
-	if(ecireUneLigneDansLeFichier("./out.txt", res) == -1){
-		printf("%s%s\n", "Erreur : ecriture dans ", "out.txt");
-		exit(1);
+		if(ecireUneLigneDansLeFichier("./out.txt", res) == -1){
+			printf("%s%s\n", "Erreur : ecriture dans ", "out.txt");
+			exit(1);
+		}
 	}
 
 	return 0;
