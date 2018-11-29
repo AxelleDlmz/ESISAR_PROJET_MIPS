@@ -33,6 +33,15 @@ void ConvertirEnHexa(char * binaire, char * retour){
 	printf("EN HEXA > %s\n",retour);
 }
 
+void lireUneLigneDuFichier(char * nomDuFichier, char * ligneRetournee){
+
+	FILE * f = fopen(nomDuFichier,"r");
+
+	fgets(ligneRetournee, 1000,f);
+
+	fclose(f);
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -44,5 +53,5 @@ int main(int argc, char const *argv[])
 	//490820
 
 	return 0;
-
 }
+
