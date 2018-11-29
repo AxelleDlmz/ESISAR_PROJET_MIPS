@@ -18,6 +18,43 @@
 		"11100", "11101", "11110", "11111"
 	};
 
+int lireUneLigneDuFichier(char * nomDuFichier, char * ligneRetournee, long * ptr){
+	FILE * f = fopen(nomDuFichier,"r");
+	if(f != NULL){
+		fseek(f,*ptr, SEEK_SET);
+			if(fgets(ligneRetournee, 1000,f)!=NULL){
+				* ptr = ftell(f);
+				fclose(f);
+				return 1;
+			}else{	//Determine la fin de fichier
+				fclose(f);
+				return -1;
+			}
+	}
+	fclose(f);
+	return -1;
+}
+
+int ecireUneLigneDansLeFichier(char * nomDuFichier, char * ligne){
+	char tmp[strlen(ligne)+1];
+	strcpy(tmp,ligne);
+	strcat(tmp,"\n");
+	FILE * f = fopen(nomDuFichier,"a");
+	if(f==NULL){
+		fclose(f);
+		return -1;
+	}else{
+		fputs(tmp,f);
+		fclose(f);
+		return 1;
+	}
+}
+
+void viderLeFichier(char * nomDuFichier){
+	FILE * f = fopen(nomDuFichier,"w");
+	fclose(f);
+}	
+
 
 /*	retourne une chaine de char
 	src : chaine de depart
@@ -114,7 +151,7 @@ void stringSplit(char *str, char tab[NBOPERANDE][TAILLEOPERANDE]){
 	str = strCpy;
 }
 
-char *traitementCommande(char tab[4][16]){
+void traitementCommande(char tab[4][16], char res[8]){
 	char result[32]= "";
 	char resultHex[8] = "";
 	char *numReg = (char*)malloc(sizeof(char)*2);
@@ -345,40 +382,48 @@ char *traitementCommande(char tab[4][16]){
 	printf("%s\n", resultHex);
 
 	free(numReg);
-	return *resultHex;
+	strcpy(res,resultHex);
 
 }	
 
 
 int main(int argc, char **argv){
 
-	printf("%s\n","######################" );
-	printf("%s\n","le meilleur groupe" );
-	printf("%s\n","######################" );
-
-
-
 	char tab[NBOPERANDE][TAILLEOPERANDE];
-	/*char *testADD = "ADD $1,$2,$9";
+	char res[8] = "";
+	char *testADD = "ADD $1,$2,$9";
 	char *testDIV = "DIV $16,$31";
 	char *testMFHI = "MFHI $7";
 	char *testSLL = "SLL $2,$5,#15";
+
+
 	stringSplit(testADD, tab);
-	traitementCommande(tab);
+	traitementCommande(tab, res);
+	if(ecireUneLigneDansLeFichier("./out.txt", res) == -1){
+		printf("%s%s\n", "Erreur : ecriture dans ", "out.txt");
+		exit(1);
+	}
 
 	stringSplit(testDIV, tab);
-	traitementCommande(tab);
+	traitementCommande(tab, res);
+	if(ecireUneLigneDansLeFichier("./out.txt", res) == -1){
+		printf("%s%s\n", "Erreur : ecriture dans ", "out.txt");
+		exit(1);
+	}
 
 	stringSplit(testMFHI, tab);
-	traitementCommande(tab);
+	traitementCommande(tab, res);
+	if(ecireUneLigneDansLeFichier("./out.txt", res) == -1){
+		printf("%s%s\n", "Erreur : ecriture dans ", "out.txt");
+		exit(1);
+	}
 
 	stringSplit(testSLL, tab);
-	traitementCommande(tab);*/
-
-	char *testADDI = "ADDI $2,$5,#15";
-	stringSplit(testADDI, tab);
-	traitementCommande(tab);
-
+	traitementCommande(tab, res);
+	if(ecireUneLigneDansLeFichier("./out.txt", res) == -1){
+		printf("%s%s\n", "Erreur : ecriture dans ", "out.txt");
+		exit(1);
+	}
 
 	return 0;
 }
