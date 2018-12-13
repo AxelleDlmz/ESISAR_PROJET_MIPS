@@ -1,5 +1,4 @@
-typedef struct instruction instruction;
-struct{
+typedef struct{
 	int operande1;
 	int operande2;
 	int operande3;
