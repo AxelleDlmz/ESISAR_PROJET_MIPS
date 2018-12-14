@@ -9,3 +9,48 @@ void initialiserMemoire(){
 	}
 }
 
+int ajouterValeur(int adr, int valeur){
+	int retour = -1;
+	int indexMemoire = adr/4;
+
+	if(adr % 4 == 0){
+		Memoire[indexMemoire].valeur = valeur;
+		Memoire[indexMemoire].valide = 1;
+		retour = 0;
+	}
+	else
+		printf("[Memoire][Ajouter Valeur] L'adresse %d n'est pas divisible par 4\n", adr);
+
+	return retour;
+}
+
+int supprimerValeur(int adr){
+	int retour = -1;
+	int indexMemoire = adr/4;
+
+	if(adr % 4 == 0){
+		Memoire[indexMemoire].valide = 0;
+
+		retour = 0;
+	}
+	else
+		printf("[Memoire][Supprimer Valeur] L'adresse %d n'est pas divisible par 4\n", adr);
+
+	return retour;
+}
+
+int lireMemoire(int adr){
+	int retour = -1;
+	int indexMemoire = adr/4;
+
+	if(adr % 4 == 0 ){
+		if(Memoire[indexMemoire].valide)
+			retour = Memoire[indexMemoire].valeur;
+		else
+			printf("[Memoire][Lire Valeur] La case memoire a l'adresse %d n'est pas valide\n", adr);
+	}
+	else
+		printf("[Memoire][Lire Valeur] L'adresse %d n'est pas divisible par 4\n", adr);
+
+	return retour;
+}
