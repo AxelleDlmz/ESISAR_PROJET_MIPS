@@ -24,23 +24,52 @@ char * int2StrBinaire(int donnee){
 	}
 	return binaire;
 }
+/* 
+	Récupère un nombre de bits dans une chaine de bits
+	Du bit début au bit de fin (non inclus)
+*/
+char * recupererBits(int deb, int fin, char * src){
+	int longueur = fin - deb;
+	char tmp[longueur];
+	if(longueur < 1){
+		return "";
+	}
+	for(int i = deb; i < fin; i++){
+		tmp[i-deb]=src[i];
+	}
+	return tmp;
+}
 
 /*
 	Récupère le int de l'instruction stocké dans la mémoire
 	Renvoie une instruction exécutable
 */
 instruction decoderInstruction (int donnee){
+	
 	instruction res;
 	char binaire[32] = int2StrBinaire(donnee);
-	char code[6]="";
-	for(int i = 0; i < 7; i++)
-		code[i]=binaire[i];
+	char code[6] = recupererBits(0,6,binaire);
 
 	if(code=="000000"){ 		// instruction spéciale
-		for(int i = 26; i < 32; i++)
-			code[i-26]=binaire[i];
+		
+		code = recupererBits(26,32,binaire); // récupération des 6 derniers bits
 		
 		switch(code){
+
+			case "000000":
+				if(binaire == "00000000000000000000000000000000"){
+					(*res).operande1 = ;
+					(*res).operande2 = ;
+					(*res).retour = ;
+					(*res).operateur = "NOPE";
+
+				}else{
+					(*res).operande1 = ;
+					(*res).operande2 = ;
+					(*res).retour = ;
+					(*res).operateur = "SLL";
+				}
+
 			case "100000": // ADD
 				(*res).operande1 = ;
 				(*res).operande2 = ;
@@ -96,8 +125,52 @@ instruction decoderInstruction (int donnee){
 				(*res).retour = ;
 				(*res).operateur = "OR";
 				break;
-		}
-	}else{
 
+			case "100010" :
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "SUB";				
+				break;
+
+			case "100110":
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "XOR";
+				break;
+				
+		}
+	}else{						//instruction non spéciale
+
+		switch(code){
+			case "001000":
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "ADDI";
+				break;
+
+			case "001111":
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "LUI";
+				break;
+
+			case "100011":
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "LW";
+				break;
+
+			case "101011":
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "SW";
+				break;
+		}
 	}
 }
