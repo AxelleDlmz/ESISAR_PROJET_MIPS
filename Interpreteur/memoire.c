@@ -9,7 +9,7 @@ void initialiserMemoire(){
 	}
 }
 
-int ajouterValeur(int adr, int valeur){
+int ajouterValeurMemoire(int adr, int valeur){
 	int retour = -1;
 	int indexMemoire = adr/4;
 
@@ -24,7 +24,7 @@ int ajouterValeur(int adr, int valeur){
 	return retour;
 }
 
-int supprimerValeur(int adr){
+int supprimerValeurMemoire(int adr){
 	int retour = -1;
 	int indexMemoire = adr/4;
 
@@ -53,4 +53,12 @@ int lireMemoire(int adr){
 		printf("[Memoire][Lire Valeur] L'adresse %d n'est pas divisible par 4\n", adr);
 
 	return retour;
+}
+
+void lireTouteMemoire(){
+	int i = 0, val;
+	while( ( val = lireMemoire(i*4) ) != -1){
+		printf("0x%x\n", val );
+		i++;
+	}
 }
