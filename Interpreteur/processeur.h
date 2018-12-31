@@ -1,3 +1,5 @@
+#ifndef __PROCESSEUR_H
+#define __PROCESSEUR_H
 typedef struct{
 	int operande1;
 	int operande2;
@@ -5,5 +7,9 @@ typedef struct{
 	char * operateur;
 } instruction;
 
+void int2StrBinaire(int donnee, char *ret);
+int prochaineInstruction();
 instruction decoderInstruction(int donnee);
 void executerInstruction(instruction inst);
+
+#endif

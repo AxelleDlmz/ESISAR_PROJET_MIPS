@@ -11,12 +11,15 @@ void NettoyerRegistres(){
 }
 
 
-int LireRegistres(int index){
+int LireRegistre(int index){
 	return Registres[index];
 }
 
 void EcrireRegistre(int index, int donnee){
-	Registres[index]=donnee;
+	if(donnee <= 2147483648 && donnee >= -2147483647) /* <= 2^31 && >= -(2^31-1)*/
+		Registres[index]=donnee;
+	else
+		printf("[EcrireRegistre] Impossible d'ecrire car le nombre %d est trop grand\n",donnee );
 }
 
 void AfficherRegistres(){

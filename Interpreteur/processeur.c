@@ -1,28 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "processeur.h"
 #include "memoire.h"
+#include "registres.h"
 
 /*	FONCTIONNALITES DU PROCESSEUR
 	
-		- Lire en mémoire à la case du PC
+		- Lire en mémoire à la case du PC : fait (prochaineInstruction)
 		- Décoder les instructions
 		- Exécuter les instructions
 		- Ecrire les résultats dans les registres
 */
 
-char * int2StrBinaire(int donnee){
-	char binaire[32] = "";
-	for(int i = 0; i > 32; i++){
-		if(donnee-pow(2,i)>0){
-			strcat(binaire,"1");
-			donnee-=pow(2,i);
+void int2StrBinaire(int donnee, char *ret){
+	int i;
+	for(i = 31; i >= 0; i--){
+		if(abs(donnee)-pow(2,i)>=0){
+			strcat(ret,"1");
+			if(donnee > 0)
+				donnee-=pow(2,i);
+			else if(donnee < 0)
+				donnee+=pow(2,i);
 		}else{
-			strcat(binaire,"0");
+			strcat(ret,"0");
 		}
 	}
-	return binaire;
 }
 /* 
 	Récupère un nombre de bits dans une chaine de bits
@@ -40,11 +44,16 @@ char * recupererBits(int deb, int fin, char * src){
 	return tmp;
 }
 
+
+int prochaineInstruction(){
+	return lireMemoire(LireRegistre(32));
+}
+
 /*
 	Récupère le int de l'instruction stocké dans la mémoire
 	Renvoie une instruction exécutable
 */
-instruction decoderInstruction (int donnee){
+/*instruction decoderInstruction (int donnee){
 	
 	instruction res;
 	char binaire[32] = int2StrBinaire(donnee);
@@ -173,4 +182,201 @@ instruction decoderInstruction (int donnee){
 				break;
 		}
 	}
+} */
+
+void executerInstruction(instruction instr){
+
+	if(strcmp(instr.operateur, "ADD") == 0){
+		/*
+			rd : 1er operande : destination
+			rs : 2e
+			rt : 3e
+		*/
+		EcrireRegistre(instr.operande1, LireRegistre(instr.operande2) + LireRegistre(instr.operande3));
+	}
+	else if(strcmp(instr.operateur, "ADDI") == 0){
+		EcrireRegistre(instr.operande1, LireRegistre(instr.operande2) + instr.operande3);
+
+	}
+	else if(strcmp(instr.operateur, "AND") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "BEQ") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "BGTZ") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "BLEZ") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "BNE") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "DIV") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "J") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "JAL") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "JR") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "LUI") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "LW") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "MFHI") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "MFLO") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "MULT") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "NOP") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "OR") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "ROTR") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "SLL") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "SLT") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "SRL") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "SUB") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "SW") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "SYSCALL") == 0){
+		
+	}
+	else if(strcmp(instr.operateur, "XOR") == 0){
+		
+	}
+
+
+
+	/*switch(instr.operateur){
+		case "ADD":
+		
+
+			break;
+
+		case "ADDI":
+
+			break;
+
+		case "AND":
+
+			break;
+
+		case "BEQ":
+
+			break;
+
+		case "BGTZ":
+
+			break;
+
+		case "BLEZ":
+
+			break;
+
+		case "BNE":
+
+			break;
+
+		case "DIV":
+
+			break;
+
+		case "J":
+
+			break;
+
+		case "JAL":
+
+			break;
+
+		case "JR":
+
+			break;
+
+		case "LUI":
+
+			break;
+
+		case "LW":
+
+			break;
+
+		case "MFHI":
+
+			break;
+
+		case "MFLO":
+
+			break;
+
+		case "MULT":
+
+			break;
+
+		case "NOP":
+
+			break;
+
+		case "OR":
+
+			break;
+
+		case "ROTR":
+
+			break;
+
+		case "SLL":
+
+			break;
+
+		case "SLT":
+
+			break;
+
+		case "SRL":
+
+			break;
+
+		case "SUB":
+
+			break;
+
+		case "SW":
+
+			break;
+
+		case "SYSCALL":
+
+			break;
+
+		case "XOR":
+
+			break;
+	}*/
 }
