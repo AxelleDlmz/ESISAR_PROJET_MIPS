@@ -42,17 +42,19 @@ void faireRoutine(){
 
 	printf("%s\n",res );*/
 
-	/*instruction instr;
+	instruction instr;
 	instr.operande1 = 1;
 	instr.operande2 = 2;
-	instr.operande3 = 14;
-	instr.operateur = "ADDI";
+	instr.operande3 = 3;
+	instr.operateur = "XOR";
 	NettoyerRegistres();
-	EcrireRegistre(2, 5);
+	
+	EcrireRegistre(2, 1);
+	EcrireRegistre(3, 1);
 
 	executerInstruction(instr);
 	printf("###\n");
 	AfficherRegistres();
-	printf("###\n");*/
+	printf("###\n");
 
 }
