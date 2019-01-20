@@ -31,7 +31,7 @@ ADDI	001000 #addi	$d, $s, i	-> $d = $s + SE(i)
 LUI	001111 #lui	$d, i		-> $d = les 16 premiers bits de i
 
 #Branch
-BEQ	000100 #beq	o $s, $t, label	-> if ($s == $t) pc += i << 2 
+BEQ	000100 #beq	o $s, $t, label	-> if ($s == $t) pc += i << 2 				
 BGTZ	000111 #bgtz	o $s, label 	-> if ($s > 0) pc += i << 2
 BLEZ	000110 #blez	o $s, label	-> if ($s <= 0) pc += i << 2 
 BNE	000101 #bne	o $s, $t, label -> if ($s != $t) pc += i << 2
@@ -39,7 +39,7 @@ J	000010 #j	o label 	-> pc += i << 2
 JAL	000011 #jal	o label 	-> $31 = pc; pc += i << 2 
 
 #Load/Store
-LW	100011 #lw	o $t, i ($s)	-> $t = MEM [$s + i]:4
-SW	101011 #sw	o $t, i ($s)	-> MEM [$s + i]:4 = $t
+LW	100011 #lw	o $t, i ($s)	-> $t = MEM [$s + i]:4				ok
+SW	101011 #sw	o $t, i ($s)	-> MEM [$s + i]:4 = $				ok
 
 #http://alumni.cs.ucr.edu/~vladimir/cs161/mips.html

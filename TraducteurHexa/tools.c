@@ -89,10 +89,10 @@ void ImmediateConcat(int nombre, char res[32]){
 				nombre =nombre-pow(2,i);
 			}	
 		}
-	}else{
-		nombre=65536+nombre;
-		for(i=15;i>=0;i--){
-			if(nombre-pow(2,i) < 0){
+	}else{																			
+		nombre=65536+nombre;									/*Pour la partie négative en complément a deux, pour ne pas réaliser une autre fonction*/
+		for(i=15;i>=0;i--){										/*On peut dire que ne nombre négatif peut se convertir comme le maximum (2^16) moins la valeur*/
+			if(nombre-pow(2,i) < 0){							/*absolu du nombre*/
 				strcat(result, "0");
 			}
 			else if (nombre- pow(2,i) >=0){
@@ -102,7 +102,38 @@ void ImmediateConcat(int nombre, char res[32]){
 		}
 
 	}
-	printf("%s\n",result );
+
+	strcat(res,result);
+}
+
+
+void ImmediateIndex(int nombre, char res[32]){
+	int i=0;
+	char result[26]="";
+	if(nombre>0){
+		for(i=25;i>=0;i--){
+			if(nombre-pow(2,i) < 0){
+				strcat(result, "0");
+			}
+			else if (nombre- pow(2,i) >=0){
+				strcat(result, "1");
+				nombre =nombre-pow(2,i);
+			}	
+		}
+	}else{																			
+		nombre=67108864+nombre;									/*Pour la partie négative en complément a deux, pour ne pas réaliser une autre fonction*/
+		for(i=25;i>=0;i--){										/*On peut dire que ne nombre négatif peut se convertir comme le maximum (2^16) moins la valeur*/
+			if(nombre-pow(2,i) < 0){							/*absolu du nombre*/
+				strcat(result, "0");
+			}
+			else if (nombre- pow(2,i) >=0){
+				strcat(result, "1");
+				nombre =nombre-pow(2,i);
+			}	
+		}
+
+	}
+
 	strcat(res,result);
 }
 
@@ -285,9 +316,18 @@ void traitementCommande(char tab[4][16], char res[8]){
 			exit(1);
 		}				
 	}
-	else if(strcmp(tab[0], "SRL") == 0){
+	else if((strcmp(tab[0], "SRL") == 0) || (strcmp(tab[0], "ROTR") == 0)){
 		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '#'){
-			strcat(result, "00000000000");
+			
+			if(strcmp(tab[0],"SRL") == 0)
+				strcat(result,"00000000000"); /* Opcode */
+			else if (strcmp(tab[0],"ROTR") == 0)
+				strcat(result,"00000000001"); /* Opcode */
+			else{
+				printf("%s\n", "Erreur");
+				exit(1);
+			}
+
 
 			numReg = substr(tab[2], 1, strlen(tab[2]));
 			numRegI = atoi(numReg);
@@ -447,9 +487,19 @@ void traitementCommande(char tab[4][16], char res[8]){
 
 
 	/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-	else if (strcmp(tab[0],"BEQ") == 0){ /* NORMAL */
+	else if ((strcmp(tab[0],"BEQ") == 0) || (strcmp(tab[0],"BNE") == 0)){ /* NORMAL */
 		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '#'){
-			strcat(result,"000100");
+			
+			if(strcmp(tab[0],"BEQ") == 0)
+				strcat(result,"000100"); /* Opcode */
+			else if (strcmp(tab[0],"BNE") == 0)
+				strcat(result,"000101"); /* Opcode */
+			else{
+				printf("%s\n", "Erreur");
+				exit(1);
+			}
+
+			
 
 			numReg = substr(tab[1], 1, strlen(tab[1]));
 			numRegI = atoi(numReg);
@@ -472,6 +522,68 @@ void traitementCommande(char tab[4][16], char res[8]){
 		else
 			printf("%s\n", "Erreur : parametres");
 	}
+
+	else if ((strcmp(tab[0],"BGTZ") == 0) || (strcmp(tab[0],"BLEZ") == 0)) { /* NORMAL */
+		if(tab[1][0] == '$' && tab[2][0] == '#' && tab[3][0] == '\0'){
+			
+			if(strcmp(tab[0],"BGTZ") == 0)
+				strcat(result,"000111"); /* Opcode */
+			else if (strcmp(tab[0],"BLEZ") == 0)
+				strcat(result,"000110"); /* Opcode */
+			else{
+				printf("%s\n", "Erreur");
+				exit(1);
+			}
+
+			numReg = substr(tab[1], 1, strlen(tab[1]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+														/* all is ok */
+			strcat(result,"00000");  /* rien dedans */
+
+			nombre = substr(tab[2],1,strlen(tab[2]));
+			numeroD=atoi(nombre);
+
+			if(numeroD>32767 || numeroD<-32768){
+				printf("%s\n","Erreur : Valeur immediate trop grande (>32767) ou trop petite (<-32768" );
+				exit(1);
+			}
+
+			ImmediateConcat(numeroD, result);
+
+		}
+		else
+			printf("%s\n", "Erreur : parametres");
+	}
+
+	else if ((strcmp(tab[0] ,"J") == 0) || (strcmp(tab[0] ,"JAL") == 0)){
+		if (tab[1][0] == '#' && tab[2][0] == '\0' && tab[3][0] == '\0'){
+
+			if(strcmp(tab[0],"J") == 0)
+				strcat(result,"000010"); /* Opcode */
+			else if (strcmp(tab[0],"JAL") == 0)
+				strcat(result,"000011"); /* Opcode */
+			else{
+				printf("%s\n", "Erreur");
+				exit(1);
+			}
+	
+			nombre = substr(tab[1],1,strlen(tab[1]));
+			numeroD=atoi(nombre);
+
+			if(numeroD>33554431 || numeroD<-33554432){
+				printf("%s\n","Erreur : Valeur immediate trop grande (>33554431) ou trop petite (<-33554432" );
+				exit(1);
+			}
+
+			ImmediateIndex(numeroD, result);
+		}
+	}
+
+
+
+
+
 	else{
 		printf("%s%s\n", "Erreur : je ne connais pas l'instruction ", tab[0]);
 		exit(1);
