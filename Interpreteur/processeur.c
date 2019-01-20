@@ -32,16 +32,36 @@ void int2StrBinaire(int donnee, char *ret){
 	Récupère un nombre de bits dans une chaine de bits
 	Du bit début au bit de fin (non inclus)
 */
-char * recupererBits(int deb, int fin, char * src){
-	int longueur = fin - deb;
-	char tmp[longueur];
+/*void recupererBits(int deb, int fin, char * src, char *ret){
+	printf("%d %d\n",deb, fin );
+	int longueur = fin - deb +1;
+	int i, j=0;
+	//ret = (char *) malloc(sizeof(char)*(longueur+1));
 	if(longueur < 1){
-		return "";
+		ret = "";
 	}
-	for(int i = deb; i < fin; i++){
-		tmp[i-deb]=src[i];
+	for(i = deb; i < fin+1; i++){
+		ret[j]=src[i];
+		j++;
+		printf("src[%d] = %c\n",i,src[i] );
 	}
-	return tmp;
+	ret[i] = '\0';
+	printf("recup : %s\n", ret);
+}*/
+
+void recupererBits(int deb, int fin, char * src, char *ret){
+	int i,j=0;
+	char *save;
+	save = (char*)malloc(sizeof(char)*strlen(src));
+	strcpy(save, src);
+
+	for(i = deb; i < deb+fin; i++){
+		ret[j] = src[i];
+		j++;
+	}
+	ret[j] = '\0';
+	printf("ret %s\n",ret );
+	strcpy(src, save);
 }
 
 

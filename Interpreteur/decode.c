@@ -1,17 +1,43 @@
-/*instruction decoderInstruction (int donnee){
+#include "processeur.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+instruction decoderInstruction (int donnee){
 	
 	instruction res;
-	char binaire[32] = int2StrBinaire(donnee);
-	char code[6] = recupererBits(0,6,binaire);
-	char codeSpe[6] = "";
+	char binaire[32] = "";
+	int2StrBinaire(donnee, binaire);
+
+	char code[6];
+	recupererBits(0,6,binaire, code); /* recupere les 6 premiers bits (opcode) */
+	printf("code %s\n", code);
+	char codeSpe[6] ="";
 	char *oper1, *oper2, *oper3;
 
 
-	if(code=="000000"){ 		// instruction spéciale
+	
+
+
+	if(strcmp(code,"000000") == 0) { 		// instruction spéciale
+		recupererBits(26,6,binaire, codeSpe); // récupération des 6 derniers bits
+		printf("codeSPe %s\n", codeSpe);
+
+		if(strcmp(code, "100100") == 0){
+			recupererBits(21,5,binaire,oper2);
+			recupererBits(16,5,binaire,oper3);
+			recupererBits(11,5,binaire,oper1);
+			res.operande2 = (int)strtol(oper2, NULL, 2);
+			res.operande3 = (int)strtol(oper3, NULL, 2);
+			res.operande1 = (int)strtol(oper1, NULL, 2);
+			res.operateur = "AND" ;
+
+			printf("%s R%d R%d R%d\n",res.operateur, res.operande1, res.operande2, res.operande3 );
+		}
 		
-		code = recupererBits(26,32,binaire); // récupération des 6 derniers bits
 		
-		switch(code){
+		
+		/*switch(code){
 
 			case "000000":
 				if(binaire == "00000000000000000000000000000000"){
@@ -35,10 +61,10 @@
 				break;
 
 			case "100100": // AND
-				(*res).operande1 = ;
-				(*res).operande2 = ;
-				(*res).retour = ;
-				(*res).operateur = "AND" ;
+				res.operande2 = (int)strtol(recupererBits(21,25,binaire), NULL, 2);
+				res.operande3 = (int)strtol(recupererBits(16,20,binaire), NULL, 2);
+				res.operande1 = (int)strtol(recupererBits(11,15,binaire), NULL, 2);
+				res.operateur = "AND" ;
 				break;
 
 			case "011010": // DIV
@@ -97,8 +123,8 @@
 				(*res).operateur = "XOR";
 				break;
 				
-		}
-	}else{						//instruction non spéciale
+		}*/
+	/*}else{						//instruction non spéciale
 		codeSpe = recupererBits(1,6,binaire);
 		printf("%s%s\n","codeSpe :", codeSpe );
 		switch(code){
@@ -165,5 +191,8 @@
 				(*res).operateur = "SW";
 				break;
 		}
+	}*/
 	}
-} */
+	return res;
+	 
+}

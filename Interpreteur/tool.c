@@ -66,3 +66,7 @@ void remplirMemoireAvecFichier(const char *nomFichier){
 		ajouterValeurMemoire(i*4, hexStr2hexInt);
 	}
 }
+
+int char2int(char *str){
+	return (int)strtol(str,NULL,0);
+}

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "registres.h"
+#include <string.h>
 
 void executerInstruction(instruction instr){
 
