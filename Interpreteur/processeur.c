@@ -49,19 +49,15 @@ void int2StrBinaire(int donnee, char *ret){
 	printf("recup : %s\n", ret);
 }*/
 
-void recupererBits(int deb, int fin, char * src, char *ret){
+void recupererBits(int deb, int fin, int donnee, char *ret){
 	int i,j=0;
-	char *save;
-	save = (char*)malloc(sizeof(char)*strlen(src));
-	strcpy(save, src);
+	char src[32] = "";
+	int2StrBinaire(donnee, src);
 
 	for(i = deb; i < deb+fin; i++){
-		ret[j] = src[i];
-		j++;
+		ret[j++] = src[i];
 	}
-	ret[j] = '\0';
-	printf("ret %s\n",ret );
-	strcpy(src, save);
+	ret[j] = '\0';	
 }
 
 

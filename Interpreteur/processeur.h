@@ -8,7 +8,7 @@ typedef struct{
 } instruction;
 
 void int2StrBinaire(int donnee, char *ret);
-void recupererBits(int deb, int fin, char * src, char *ret);
+void recupererBits(int deb, int fin, int donnee, char *ret);
 int prochaineInstruction();
 instruction decoderInstruction(int donnee);
 void executerInstruction(instruction inst);
