@@ -9,11 +9,10 @@ instruction decoderInstruction (int donnee){
 	char codeSpe[6] = "";
 	char *oper1, *oper2, *oper3;
 
-	recupererBits(0,6,donnee, code); /* recupere les 6 premiers bits (opcode) */
-	printf("code %s\n", code);
-
+	recupererBits(26,6,donnee, code); /* recupere les 6 premiers bits (opcode) */
+	
 	if(!strcmp(code,"000000")) { 		// instruction spéciale
-		recupererBits(26,31,donnee, codeSpe); // récupération des 6 derniers bits
+		recupererBits(0,6,donnee, codeSpe); // récupération des 6 derniers bits
 		if(!strcmp(codeSpe, "100100")){
 			oper1 = (char*) malloc(sizeof(char)*5);
 			oper2 = (char*) malloc(sizeof(char)*5);
@@ -21,13 +20,11 @@ instruction decoderInstruction (int donnee){
 			recupererBits(21,5,donnee,oper2);
 			recupererBits(16,5,donnee,oper3);
 			recupererBits(11,5,donnee,oper1);
-			printf("donnee %d\n",donnee );
 			res.operande2 = (int)strtol(oper2, NULL, 2);
 			res.operande3 = (int)strtol(oper3, NULL, 2);
 			res.operande1 = (int)strtol(oper1, NULL, 2);
 			res.operateur = "AND" ;
 
-			printf("%s R%d R%d R%d\n",res.operateur, res.operande1, res.operande2, res.operande3 );
 		}
 		
 		

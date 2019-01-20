@@ -120,9 +120,10 @@ void faireRoutineInteractifDirect(){
 				exit(EXIT_FAILURE);
 			}
 			EcrireRegistre(32,LireRegistre(32) + 4);
+
 			instruction instr = decoderInstruction(valMem);
 			printf("%s R%d R%d R%d\n",instr.operateur, instr.operande1, instr.operande2, instr.operande3 );
-			/*executerInstruction(instr);*/
+			executerInstruction(instr);
 		}
 		else{
 			printf("Erreur : format incompris\n");
