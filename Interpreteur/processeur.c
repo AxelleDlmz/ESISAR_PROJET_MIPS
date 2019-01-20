@@ -53,11 +53,14 @@ int prochaineInstruction(){
 	Récupère le int de l'instruction stocké dans la mémoire
 	Renvoie une instruction exécutable
 */
-/*instruction decoderInstruction (int donnee){
+instruction decoderInstruction (int donnee){
 	
 	instruction res;
 	char binaire[32] = int2StrBinaire(donnee);
 	char code[6] = recupererBits(0,6,binaire);
+	char codeSpe[6] = "";
+	char *oper1, *oper2, *oper3;
+
 
 	if(code=="000000"){ 		// instruction spéciale
 		
@@ -151,13 +154,49 @@ int prochaineInstruction(){
 				
 		}
 	}else{						//instruction non spéciale
-
+		codeSpe = recupererBits(1,6,binaire);
+		printf("%s%s\n","codeSpe :", codeSpe );
 		switch(code){
 			case "001000":
 				(*res).operande1 = ;
 				(*res).operande2 = ;
 				(*res).retour = ;
 				(*res).operateur = "ADDI";
+				break;
+
+			case "000111":
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "BEQ";
+				break;
+
+			case "000110":
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "BLEZ";
+				break;
+
+			case "000101":
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "BNE";
+				break;
+
+			case "000010":
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "J";
+				break;
+
+			case "000011":
+				(*res).operande1 = ;
+				(*res).operande2 = ;
+				(*res).retour = ;
+				(*res).operateur = "JAL";
 				break;
 
 			case "001111":
@@ -182,7 +221,7 @@ int prochaineInstruction(){
 				break;
 		}
 	}
-} */
+} 
 
 void executerInstruction(instruction instr){
 
