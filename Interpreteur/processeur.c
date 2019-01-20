@@ -54,12 +54,11 @@ void recupererBits(int deb, int fin, int donnee, char *ret){
 	char src[32] = "";
 	int2StrBinaire(donnee, src);
 
-	for(i = deb; i < deb+fin; i++){
+	for(i = 31-deb-fin+1; i < 31-deb+1; i++){
 		ret[j++] = src[i];
 	}
 	ret[j] = '\0';	
 }
-
 
 
 int prochaineInstruction(){

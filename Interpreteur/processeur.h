@@ -9,9 +9,6 @@ typedef struct{
 
 void int2StrBinaire(int donnee, char *ret);
 void recupererBits(int deb, int fin, int donnee, char *ret);
-void recupererBitsOp(int deb, int fin, int donnee, char *ret);
 int prochaineInstruction();
-instruction decoderInstruction(int donnee);
-void executerInstruction(instruction inst);
 
 #endif
