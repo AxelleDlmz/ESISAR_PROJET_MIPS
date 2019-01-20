@@ -5,6 +5,8 @@
 #include "registres.h"
 #include "tool.h"
 #include "processeur.h"
+#include "exec.h"
+#include "decode.h"
 
 void faireRoutine();
 

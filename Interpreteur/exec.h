@@ -1,0 +1,1 @@
+void executerInstruction(instruction instr);
