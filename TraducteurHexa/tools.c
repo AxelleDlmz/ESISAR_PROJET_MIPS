@@ -79,17 +79,30 @@ char *substr(char *src,int pos,int stopInd) {
 void ImmediateConcat(int nombre, char res[32]){
 	int i=0;
 	char result[16]="";
-
-	for(i=15;i>=0;i--){
-		if(nombre-pow(2,i) < 0){
-			strcat(result, "0");
+	if(nombre>0){
+		for(i=15;i>=0;i--){
+			if(nombre-pow(2,i) < 0){
+				strcat(result, "0");
+			}
+			else if (nombre- pow(2,i) >=0){
+				strcat(result, "1");
+				nombre =nombre-pow(2,i);
+			}	
 		}
-		else if (nombre- pow(2,i) >=0){
-			strcat(result, "1");
-			nombre =nombre-pow(2,i);
-		}	
-	}
+	}else{
+		nombre=65536+nombre;
+		for(i=15;i>=0;i--){
+			if(nombre-pow(2,i) < 0){
+				strcat(result, "0");
+			}
+			else if (nombre- pow(2,i) >=0){
+				strcat(result, "1");
+				nombre =nombre-pow(2,i);
+			}	
+		}
 
+	}
+	printf("%s\n",result );
 	strcat(res,result);
 }
 
@@ -156,6 +169,7 @@ void traitementCommande(char tab[4][16], char res[8]){
 	int numRegI;
 	char* nombre;
 	int numeroD;
+	
 
 	if(strcmp(tab[0], "ADD") == 0 || strcmp(tab[0], "AND") == 0 || strcmp(tab[0], "OR") == 0 ||		/* Regroupe toutes les trames speciales */
 		strcmp(tab[0], "XOR") == 0 || strcmp(tab[0], "SUB") == 0 || strcmp(tab[0], "SLT") == 0){	/* qui ont 3 registres comme parametre  */
@@ -336,8 +350,8 @@ void traitementCommande(char tab[4][16], char res[8]){
 			
 			nombre = substr(tab[3],1,strlen(tab[3]));
 			numeroD=atoi(nombre);
-			if(numeroD>65535){
-				printf("%s\n","Erreur : Valeur immediate trop grande (>65535)" );
+			if(numeroD>32767 || numeroD<-32768){
+				printf("%s\n","Erreur : Valeur immediate trop grande (>32767) ou trop petite (<-32768" );
 				exit(1);
 			}
 
@@ -360,10 +374,11 @@ void traitementCommande(char tab[4][16], char res[8]){
 			nombre = substr(tab[2],1,strlen(tab[2]));
 			numeroD=atoi(nombre);
 
-			if(numeroD>65535){
-				printf("%s\n","Erreur : Valeur immediate trop grande (>65535)" );
+			if(numeroD>32767 || numeroD<-32768){
+				printf("%s\n","Erreur : Valeur immediate trop grande (>32767) ou trop petite (<-32768" );
 				exit(1);
 			}
+
 
 			ImmediateConcat(numeroD, result);
 
@@ -387,10 +402,11 @@ void traitementCommande(char tab[4][16], char res[8]){
 			nombre = substr(tab[2],1,strlen(tab[2]));
 			numeroD=atoi(nombre);
 
-			if(numeroD>65535){
-				printf("%s\n","Erreur : Valeur immediate trop grande (>65535)" );
+			if(numeroD>32767 || numeroD<-32768){
+				printf("%s\n","Erreur : Valeur immediate trop grande (>32767) ou trop petite (<-32768" );
 				exit(1);
 			}
+
 
 			ImmediateConcat(numeroD, result);
 		}
@@ -416,12 +432,42 @@ void traitementCommande(char tab[4][16], char res[8]){
 			nombre = substr(tab[2],1,strlen(tab[2]));
 			numeroD=atoi(nombre);
 
-			if(numeroD>65535){
-				printf("%s\n","Erreur : Valeur immediate trop grande (>65535)" );
+			if(numeroD>32767 || numeroD<-32768){
+				printf("%s\n","Erreur : Valeur immediate trop grande (>32767) ou trop petite (<-32768" );
+				exit(1);
+			}
+
+
+			ImmediateConcat(numeroD, result);
+		}
+		else
+			printf("%s\n", "Erreur : parametres");
+	}
+
+
+
+	/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+	else if (strcmp(tab[0],"BEQ") == 0){ /* NORMAL */
+		if(tab[1][0] == '$' && tab[2][0] == '$' && tab[3][0] == '#'){
+			strcat(result,"000100");
+
+			numReg = substr(tab[1], 1, strlen(tab[1]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+
+			numReg = substr(tab[2], 1, strlen(tab[2]));
+			numRegI = atoi(numReg);
+			strcat(result, regBits[numRegI]);
+			
+			nombre = substr(tab[3],1,strlen(tab[3]));
+			numeroD=atoi(nombre);
+			if(numeroD>32767 || numeroD<-32768){
+				printf("%s\n","Erreur : Valeur immediate trop grande (>32767) ou trop petite (<-32768" );
 				exit(1);
 			}
 
 			ImmediateConcat(numeroD, result);
+
 		}
 		else
 			printf("%s\n", "Erreur : parametres");
