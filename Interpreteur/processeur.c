@@ -61,6 +61,7 @@ void recupererBits(int deb, int fin, int donnee, char *ret){
 }
 
 
+
 int prochaineInstruction(){
 	return lireMemoire(LireRegistre(32));
 }
