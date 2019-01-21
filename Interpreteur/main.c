@@ -5,8 +5,6 @@
 #include "registres.h"
 #include "tool.h"
 #include "processeur.h"
-#include "exec.h"
-#include "decode.h"
 
 void faireRoutineFichierInteractif();
 void faireRoutineInteractifDirect();
@@ -103,10 +101,11 @@ void faireRoutineInteractifDirect(){
 	int valMem;
 
 	NettoyerRegistres();
-	EcrireRegistre(2,8);
+	EcrireRegistre(2,3);
+	EcrireRegistre(3,2);
 
 	do{
-		printf("Entrez la prochaine instruction (en hexa, sans 0x), mem pour afficher la memoire, reg pour les registres, EXIT pour sortir\n");
+		printf("Entrez la prochaine instruction (en hexa, avec 0x), mem pour afficher la memoire, reg pour les registres, EXIT pour sortir\n");
 		scanf("%s", retour);
 		retour[10] = '\n';
 		if(strcmp(retour, "reg") == 0)
@@ -115,7 +114,7 @@ void faireRoutineInteractifDirect(){
 			lireTouteMemoire();
 		else if(strlen(retour) == 11){
 			valMem = char2int(retour);
-			printf("Placement en memoire et execution de l'instruction %x\n", valMem);
+			//printf("Placement en memoire et execution de l'instruction %x\n", valMem);
 			if(ajouterValeurMemoire(LireRegistre(32), valMem) == -1){
 				printf("ERREUR : placement en memoire impossible\n");
 				exit(EXIT_FAILURE);
@@ -123,7 +122,7 @@ void faireRoutineInteractifDirect(){
 			EcrireRegistre(32,LireRegistre(32) + 4);
 
 			instruction instr = decoderInstruction(valMem);
-			printf("%s R%d R%d R%d\n",instr.operateur, instr.operande1, instr.operande2, instr.operande3 );
+			printf("%s R%d R%d R%d\n\n",instr.operateur, instr.operande1, instr.operande2, instr.operande3 );
 			executerInstruction(instr);
 		}
 		else{

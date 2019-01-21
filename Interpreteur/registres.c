@@ -16,7 +16,7 @@ int LireRegistre(int index){
 }
 
 void EcrireRegistre(int index, int donnee){
-	if(donnee <= 2147483648 && donnee >= -2147483647) /* <= 2^31 && >= -(2^31-1)*/
+	if(donnee <= 2147483648 && donnee >= -2147483648) /* <= 2^31 && >= -(2^31-1)*/
 		Registres[index]=donnee;
 	else
 		printf("[EcrireRegistre] Impossible d'ecrire car le nombre %d est trop grand\n",donnee );

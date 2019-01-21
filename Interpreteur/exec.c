@@ -29,11 +29,11 @@ void executerInstruction(instruction instr){
 	}
 	else if(strcmp(instr.operateur, "BGTZ") == 0){
 		if(LireRegistre(instr.operande1) > 0)
-			EcrireRegistre(32, LireRegistre(32) + instr.operande3);
+			EcrireRegistre(32, LireRegistre(32) + instr.operande2);
 	}
 	else if(strcmp(instr.operateur, "BLEZ") == 0){
 		if(LireRegistre(instr.operande1) <= 0)
-			EcrireRegistre(32, LireRegistre(32) + instr.operande3);
+			EcrireRegistre(32, LireRegistre(32) + instr.operande2);
 	}
 	else if(strcmp(instr.operateur, "BNE") == 0){
 		if(LireRegistre(instr.operande1) != LireRegistre(instr.operande2))
@@ -47,13 +47,13 @@ void executerInstruction(instruction instr){
 		}
 	}
 	else if(strcmp(instr.operateur, "J") == 0){
-		EcrireRegistre(32, instr.operande3);
+		EcrireRegistre(32, LireRegistre(32) +instr.operande1);
 	}
 	else if(strcmp(instr.operateur, "JAL") == 0){
 		printf("Don't know watta do\n");
 	}
 	else if(strcmp(instr.operateur, "JR") == 0){
-		EcrireRegistre(32, LireRegistre(instr.operande2));
+		EcrireRegistre(32, LireRegistre(instr.operande1));
 	}
 	else if(strcmp(instr.operateur, "LUI") == 0){
 		EcrireRegistre(LireRegistre(instr.operande1), instr.operande2 << 16);
@@ -67,12 +67,11 @@ void executerInstruction(instruction instr){
 	else if(strcmp(instr.operateur, "MFLO") == 0){
 		EcrireRegistre(instr.operande1, LireRegistre(34));
 	}
-	else if(strcmp(instr.operateur, "MULT") == 0){ /*Ne fonctionne pas*/
+	else if(strcmp(instr.operateur, "MULT") == 0){ /*Ne gere pas l'overflow*/
 		int val1 = LireRegistre(instr.operande1);
 		int val2 = LireRegistre(instr.operande2);
 		if(val1 * val2 > pow(2,32)-1){
-			EcrireRegistre(34, (val1 * val2) & 0xFFFFFFFF);
-			EcrireRegistre(33, (val1 * val2) & (0xFFFFFFFF << 32));
+			printf("Erreur : le nombre resultant de la multiplication ne rentre pas sur 32 bits. Nous ne sommes pas parvenu a resoudre ce probleme\n");
 		}
 		else
 			EcrireRegistre(34, val1 * val2);
