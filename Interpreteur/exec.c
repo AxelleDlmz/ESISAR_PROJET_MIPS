@@ -24,34 +24,29 @@ void executerInstruction(instruction instr){
 	}
 	else if(strcmp(instr.operateur, "BEQ") == 0){
 		if(LireRegistre(instr.operande1) == LireRegistre(instr.operande2))
-			/*Branch*/
-			printf("BRANCH\n");
-		/*la comparaison doit-elle se faire par une soustraction ?*/
+			EcrireRegistre(32, LireRegistre(32) + instr.operande3);
 	}
 	else if(strcmp(instr.operateur, "BGTZ") == 0){
 		if(LireRegistre(instr.operande1) > 0)
-			/*Branch*/
-			printf("BRANCH\n");
+			EcrireRegistre(32, LireRegistre(32) + instr.operande3);
 	}
 	else if(strcmp(instr.operateur, "BLEZ") == 0){
 		if(LireRegistre(instr.operande1) <= 0)
-			/*Branch*/
-			printf("BRANCH\n");
+			EcrireRegistre(32, LireRegistre(32) + instr.operande3);
 	}
 	else if(strcmp(instr.operateur, "BNE") == 0){
 		if(LireRegistre(instr.operande1) != LireRegistre(instr.operande2))
-			/*Branch*/
-			printf("BRANCH\n");
+			EcrireRegistre(32, LireRegistre(32) + instr.operande3);
 		
 	}
 	else if(strcmp(instr.operateur, "DIV") == 0){
 		if(LireRegistre(instr.operande2) != 0){
-			EcrireRegistre(33, LireRegistre(instr.operande1) % LireRegistre(instr.operande2));
-			EcrireRegistre(34, LireRegistre(instr.operande1) / LireRegistre(instr.operande2));
+			EcrireRegistre(33, LireRegistre(instr.operande1) % LireRegistre(instr.operande2)); //Reste
+			EcrireRegistre(34, LireRegistre(instr.operande1) / LireRegistre(instr.operande2)); //Quotient entier
 		}
 	}
 	else if(strcmp(instr.operateur, "J") == 0){
-		printf("BRANCH\n");
+		EcrireRegistre(32, instr.operande3);
 	}
 	else if(strcmp(instr.operateur, "JAL") == 0){
 		printf("Don't know watta do\n");
@@ -63,7 +58,7 @@ void executerInstruction(instruction instr){
 		EcrireRegistre(LireRegistre(instr.operande1), instr.operande2 << 16);
 	}
 	else if(strcmp(instr.operateur, "LW") == 0){
-		
+		EcrireRegistre(instr.operande1, lireMemoire(LireRegistre(instr.operande3) + instr.operande2));
 	}
 	else if(strcmp(instr.operateur, "MFHI") == 0){
 		EcrireRegistre(LireRegistre(instr.operande1), 33);
@@ -103,7 +98,7 @@ void executerInstruction(instruction instr){
 		EcrireRegistre(instr.operande1, LireRegistre(instr.operande2) - LireRegistre(instr.operande3));
 	}
 	else if(strcmp(instr.operateur, "SW") == 0){
-		printf("Don't know watta do\n");
+		ajouterValeurMemoire(LireRegistre(instr.operande3) + instr.operande2, LireRegistre(instr.operande1));
 	}
 	else if(strcmp(instr.operateur, "SYSCALL") == 0){
 		printf("Don't know watta do\n");

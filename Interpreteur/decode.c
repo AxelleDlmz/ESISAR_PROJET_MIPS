@@ -50,12 +50,12 @@ instruction decoderInstruction (int donnee){
 		if(!strcmp(codeSpe,"001000")){ // JR ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?
 			//oper1 = (char*) malloc(sizeof(char)*5);
 			oper2 = (char*) malloc(sizeof(char)*5); // rs 
-			oper3 = (char*) malloc(sizeof(char)*5); // rt
+			//oper3 = (char*) malloc(sizeof(char)*5); // rt
 			recupererBits(21,5,donnee,oper2);
-			recupererBits(16,5,donnee,oper3);
+			//recupererBits(16,5,donnee,oper3);
 			res.operande2 = (int)strtol(oper2, NULL, 2);
-			res.operande3 = (int)strtol(oper3, NULL, 2);
-			res.operateur = "DIV" ;
+			//res.operande3 = (int)strtol(oper3, NULL, 2);
+			res.operateur = "JR" ;
 		}
 		if(!strcmp(codeSpe,"010000")){ // MFHI 
 			oper1 = (char*) malloc(sizeof(char)*5);
@@ -114,47 +114,61 @@ instruction decoderInstruction (int donnee){
 			res.operande1 = (int)strtol(oper1, NULL, 2);
 			res.operateur = "XOR" ;
 		}
+		/*
+			manque : NOP, ROTR, SLL, SLT, SRL
+		*/
 	}else{
-		if(!strcmp(codeSpe,"001000")){ //ADDI
-			oper1 = (char*) malloc(sizeof(char)*16); // immediate
+		if(!strcmp(code,"001000")){ //ADDI
+			
+			oper1 = (char*) malloc(sizeof(char)*5); // rt
 			oper2 = (char*) malloc(sizeof(char)*5); // rs
-			oper3 = (char*) malloc(sizeof(char)*5); // rt
-			recupererBits(0,16,donnee,oper1);
+			oper3 = (char*) malloc(sizeof(char)*16); // immediate
+			recupererBits(16,5,donnee,oper1);
 			recupererBits(21,5,donnee,oper2);
-			recupererBits(16,5,donnee,oper3);
+			recupererBits(0,16,donnee,oper3);
 			res.operande2 = (int)strtol(oper2, NULL, 2);
 			res.operande3 = (int)strtol(oper3, NULL, 2);
 			res.operande1 = (int)strtol(oper1, NULL, 2);
 			res.operateur = "ADDI" ;
 		}
-		if(!strcmp(codeSpe,"000111")){ // BEQ
-			oper1 = (char*) malloc(sizeof(char)*16); // offset
+		if(!strcmp(code,"000100")){ // BEQ
+			
+			oper1 = (char*) malloc(sizeof(char)*5); // rt
 			oper2 = (char*) malloc(sizeof(char)*5); // rs
-			oper3 = (char*) malloc(sizeof(char)*5); // rt
-			recupererBits(0,16,donnee,oper1);
+			oper3 = (char*) malloc(sizeof(char)*16); // offset
+			recupererBits(16,5,donnee,oper1);
 			recupererBits(21,5,donnee,oper2);
-			recupererBits(16,5,donnee,oper3);
+			recupererBits(0,16,donnee,oper3);
 			res.operande2 = (int)strtol(oper2, NULL, 2);
 			res.operande3 = (int)strtol(oper3, NULL, 2);
 			res.operande1 = (int)strtol(oper1, NULL, 2);
 			res.operateur = "BEQ" ;
 		}
+		if(!strcmp(code, "000111")){ //BGTZ
+			oper2 = (char*) malloc(sizeof(char)*16); // offset
+			oper1 = (char*) malloc(sizeof(char)*5); // rs
+			recupererBits(0,16,donnee,oper2);
+			recupererBits(21,5,donnee,oper1);
+			res.operande2 = (int)strtol(oper2, NULL, 2);
+			res.operande3 = (int)strtol(oper3, NULL, 2);
+			res.operateur = "BGTZ" ;
+		}
 		if(!strcmp(codeSpe,"000110")){ //BLEZ
-			oper1 = (char*) malloc(sizeof(char)*16); // offset
-			oper2 = (char*) malloc(sizeof(char)*5); // rs
-			recupererBits(0,16,donnee,oper1);
-			recupererBits(21,5,donnee,oper2);
+			oper2 = (char*) malloc(sizeof(char)*16); // offset
+			oper1 = (char*) malloc(sizeof(char)*5); // rs
+			recupererBits(0,16,donnee,oper2);
+			recupererBits(21,5,donnee,oper1);
 			res.operande2 = (int)strtol(oper2, NULL, 2);
 			res.operande3 = (int)strtol(oper3, NULL, 2);
 			res.operateur = "BLEZ" ;
 		}
 		if(!strcmp(codeSpe,"000101")){ // BNE
-			oper1 = (char*) malloc(sizeof(char)*16); // offset
+			oper3 = (char*) malloc(sizeof(char)*16); // offset
 			oper2 = (char*) malloc(sizeof(char)*5); // rs
-			oper3 = (char*) malloc(sizeof(char)*5); // rt
-			recupererBits(0,16,donnee,oper1);
+			oper1 = (char*) malloc(sizeof(char)*5); // rt
+			recupererBits(0,16,donnee,oper3);
 			recupererBits(21,5,donnee,oper2);
-			recupererBits(16,5,donnee,oper3);
+			recupererBits(16,5,donnee,oper1);
 			res.operande2 = (int)strtol(oper2, NULL, 2);
 			res.operande3 = (int)strtol(oper3, NULL, 2);
 			res.operande1 = (int)strtol(oper1, NULL, 2);
@@ -174,33 +188,33 @@ instruction decoderInstruction (int donnee){
 			res.operateur = "JAL" ;
 		}
 		if(!strcmp(codeSpe,"001111")){ // LUI
-			oper1 = (char*) malloc(sizeof(char)*16); // immediate
-			oper3 = (char*) malloc(sizeof(char)*5); // rt
-			recupererBits(0,16,donnee,oper1);
-			recupererBits(16,5,donnee,oper3);
-			res.operande3 = (int)strtol(oper3, NULL, 2);
+			oper2 = (char*) malloc(sizeof(char)*16); // immediate
+			oper1 = (char*) malloc(sizeof(char)*5); // rt
+			recupererBits(0,16,donnee,oper2);
+			recupererBits(16,5,donnee,oper1);
+			res.operande2 = (int)strtol(oper2, NULL, 2);
 			res.operande1 = (int)strtol(oper1, NULL, 2);
 			res.operateur = "LUI" ;
 		}
 		if(!strcmp(codeSpe,"100011")){ // LW
-			oper1 = (char*) malloc(sizeof(char)*16); // offset
-			oper2 = (char*) malloc(sizeof(char)*5); // base
-			oper3 = (char*) malloc(sizeof(char)*5); // rt
-			recupererBits(0,16,donnee,oper1);
-			recupererBits(21,5,donnee,oper2);
-			recupererBits(16,5,donnee,oper3);
+			oper2 = (char*) malloc(sizeof(char)*16); // offset
+			oper3 = (char*) malloc(sizeof(char)*5); // base
+			oper1 = (char*) malloc(sizeof(char)*5); // rt
+			recupererBits(0,16,donnee,oper2);
+			recupererBits(21,5,donnee,oper3);
+			recupererBits(16,5,donnee,oper1);
 			res.operande2 = (int)strtol(oper2, NULL, 2);
 			res.operande3 = (int)strtol(oper3, NULL, 2);
 			res.operande1 = (int)strtol(oper1, NULL, 2);
 			res.operateur = "LW" ;
 		}
 		if(!strcmp(codeSpe,"101011")){ // SW
-			oper1 = (char*) malloc(sizeof(char)*16); // offset
-			oper2 = (char*) malloc(sizeof(char)*5); // base
-			oper3 = (char*) malloc(sizeof(char)*5); // rt
-			recupererBits(0,16,donnee,oper1);
-			recupererBits(21,5,donnee,oper2);
-			recupererBits(16,5,donnee,oper3);
+			oper2 = (char*) malloc(sizeof(char)*16); // offset
+			oper3 = (char*) malloc(sizeof(char)*5); // base
+			oper1 = (char*) malloc(sizeof(char)*5); // rt
+			recupererBits(0,16,donnee,oper2);
+			recupererBits(21,5,donnee,oper3);
+			recupererBits(16,5,donnee,oper1);
 			res.operande2 = (int)strtol(oper2, NULL, 2);
 			res.operande3 = (int)strtol(oper3, NULL, 2);
 			res.operande1 = (int)strtol(oper1, NULL, 2);
