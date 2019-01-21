@@ -103,6 +103,7 @@ void faireRoutineInteractifDirect(){
 	int valMem;
 
 	NettoyerRegistres();
+	EcrireRegistre(2,8);
 
 	do{
 		printf("Entrez la prochaine instruction (en hexa, sans 0x), mem pour afficher la memoire, reg pour les registres, EXIT pour sortir\n");

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "registres.h"
+#include "memoire.h"
 #include <string.h>
 
 void executerInstruction(instruction instr){
@@ -61,10 +62,10 @@ void executerInstruction(instruction instr){
 		EcrireRegistre(instr.operande1, lireMemoire(LireRegistre(instr.operande3) + instr.operande2));
 	}
 	else if(strcmp(instr.operateur, "MFHI") == 0){
-		EcrireRegistre(LireRegistre(instr.operande1), 33);
+		EcrireRegistre(instr.operande1, LireRegistre(33));
 	}
 	else if(strcmp(instr.operateur, "MFLO") == 0){
-		EcrireRegistre(LireRegistre(instr.operande1), 34);
+		EcrireRegistre(instr.operande1, LireRegistre(34));
 	}
 	else if(strcmp(instr.operateur, "MULT") == 0){ /*Ne fonctionne pas*/
 		int val1 = LireRegistre(instr.operande1);
