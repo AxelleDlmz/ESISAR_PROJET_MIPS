@@ -24,17 +24,23 @@ void EcrireRegistre(int index, int donnee){
 
 void AfficherRegistres(){
 	int i=0;
-
-	for(i=0;i<=29;i+=3){
-		printf("%s%d%s%d\t\t\t%s%d%s%d\t\t\t%s%d%s%d\n","R",i," = ",Registres[i],
-														"R",i+1," = ",Registres[i+1],
-														"R",i+2," = ",Registres[i+2]);
+	printf("\n");
+	for(i=0;i<=30;i+=3){
+		printf("%s%d%s%d","R",i," = ",Registres[i]);
+		if(Registres[i]<100){
+			printf("\t\t\t%s%d%s%d","R",i+1," = ",Registres[i+1]);
+		}else{
+			printf("\t\t%s%d%s%d","R",i+1," = ",Registres[i+1]);
+		}
+		if(Registres[i+1]<100){
+			printf("\t\t\t%s%d%s%d\n","R",i+2," = ",Registres[i+2]);
+		}else{
+			printf("\t\t%s%d%s%d\n","R",i+2," = ",Registres[i+2]);
+		}		
 	}
-	printf("%s%s%d\t\t\t%s%s%d\n","R30"," = ",Registres[30],"R31"," = ",Registres[31]);
-
-
-	printf("%s%d\t\t\t%s%d\t\t\t%s%d\n","PC = ",Registres[32],
+	printf("\n%s%d\t\t\t%s%d\t\t\t%s%d\n","PC = ",Registres[32],
 										"HI = ",Registres[33],
 										"L0 = ",Registres[34] );
-	
+	printf("\n\n");
+
 }
