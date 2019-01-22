@@ -36,6 +36,9 @@ int lireFichier(const char * nomDuFichier, char contenuFichier[256][9]){
 	return i;
 }
 
+/*
+	Prends en parametre le nom du fichier, et retourne le nombre de ligne
+*/
 int compterLignes(const char * nomDuFichier){
 	FILE * f = fopen(nomDuFichier,"r");
 	char ch;
@@ -54,6 +57,10 @@ int compterLignes(const char * nomDuFichier){
 	return nbLignes;
 }
 
+/*
+	Prends en entree un fichier contenant des operations sous forme hexa
+	Les convertit au format entier, et les place en memoire
+*/
 void remplirMemoireAvecFichier(const char *nomFichier){
 	int nbLignes, i; 
 	unsigned int hexStr2hexInt;
@@ -70,10 +77,11 @@ void remplirMemoireAvecFichier(const char *nomFichier){
 	}
 }
 
-int char2int(char *str){
-	return (int)strtol(str,NULL,0);
-}
-
+/*
+	Convertit le fichier d'instruction au format texte
+	en un fichier d'instruction au format hexa
+	Le fichier de sortie s'appelle out.txt
+*/
 void traduireFichier(char *nomFic){
 
 	char tab[NBOPERANDE][TAILLEOPERANDE];

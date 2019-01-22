@@ -13,6 +13,9 @@ void faireRoutineDirect();
 
 
 
+/* 
+	Analyse les parametres, et execute la routine correspondante
+*/
 
 int main(int argc, char const *argv[])
 {
@@ -39,6 +42,12 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
+/*
+	Prend en parametre le nom du fichier contenant les instructions
+	Traduit le fichier d'instruction, puis bascule toutes les operations en memoire
+	Enfin, lis la memoire case par case, et execute les fonctions une a une
+	en affichant les registres a chaque fois
+*/
 void faireRoutineFichierInteractif(char *nomFic){
 	if(strlen(nomFic) < 30){
 		char retour[5];
@@ -81,7 +90,15 @@ void faireRoutineFichierInteractif(char *nomFic){
 		printf("%s\n","Erreur : nom de fichier trop long" );
 }
 
+/*
+	En mode hex :
+		La fonction va interpreter l'operation et l'executer.
+		reg pour afficher les registres, mem pour afficher la memoire
 
+	En mode txt :
+		La fonction va traduire puis interpreter l'operations, pour enfin l'executer
+		reg pour afficher les registres, mem pour afficher la memoire
+*/
 void faireRoutineInteractifDirect(){
 	char *retour;
 	int valMem;
@@ -89,14 +106,13 @@ void faireRoutineInteractifDirect(){
 	/* Pour le mode texte */
 	char tab[NBOPERANDE][TAILLEOPERANDE];
 	char res[8] = "";
-	char buffer[20] = "";
 
 	NettoyerRegistres();
 	EcrireRegistre(2,3);
 	EcrireRegistre(3,2);
 
 	do{
-		if(mode == 0){
+		if(mode == 0){ /* mode hex */
 			retour = (char*)malloc(sizeof(char)*11);
 			printf("Entrez la prochaine instruction (en hexa, avec 0x), mem pour afficher la memoire, reg pour les registres, EXIT pour sortir\n\n");
 			scanf("%s", retour);
@@ -110,8 +126,7 @@ void faireRoutineInteractifDirect(){
 			else if(strcmp(retour, "hex") == 0)
 				printf("Deja en mode hex\n");
 			else if(strlen(retour) == 11){
-				valMem = char2int(retour);
-				//printf("Placement en memoire et execution de l'instruction %x\n", valMem);
+				valMem = (int)strtol(retour, NULL, 16);
 				if(ajouterValeurMemoire(LireRegistre(32), valMem) == -1){
 					printf("ERREUR : placement en memoire impossible\n");
 					exit(EXIT_FAILURE);
@@ -123,7 +138,7 @@ void faireRoutineInteractifDirect(){
 				executerInstruction(instr);
 			}
 		}
-		else if(mode == 1){
+		else if(mode == 1){ /* mode txt */
 			retour = (char*)malloc(sizeof(char)*32);
 			printf("Entrez la prochaine instruction (ex : ADDI_$1,$2,#3  en remplacant l'espace par '_'), reg pour afficher les registres\n\n");
 			scanf("%s", retour);
@@ -151,11 +166,7 @@ void faireRoutineInteractifDirect(){
 		else{
 			printf("Erreur : format incompris\n");
 			exit(EXIT_FAILURE);
-		} 
-
-		
-		//printf("%s R%d R%d R%d\n\n",instr.operateur, instr.operande1, instr.operande2, instr.operande3 );
-
+		}
 
 	}while(strcmp(retour, "EXIT") != 0);
 	printf("Arret du programme\n");
