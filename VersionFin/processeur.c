@@ -8,12 +8,16 @@
 
 /*	FONCTIONNALITES DU PROCESSEUR
 	
-		- Lire en mémoire à la case du PC : fait (prochaineInstruction)
-		- Décoder les instructions
-		- Exécuter les instructions
-		- Ecrire les résultats dans les registres
+		- Lire en memoire a la case du PC : fait (prochaineInstruction)
+		- Decoder les instructions
+		- Executer les instructions
+		- Ecrire les resultats dans les registres
 */
 
+/*
+	Prend un entier en entree, cet entier sera traduit dans sa forme hexadecimale
+	Cette forme hexadecimale est une chaîne de caracteres contenue dans *ret
+*/
 void int2StrBinaire(int donnee, char *ret){
 	int i;
 	for(i = 31; i >= 0; i--){
@@ -29,8 +33,8 @@ void int2StrBinaire(int donnee, char *ret){
 	}
 }
 /* 
-	Récupère un nombre de bits dans une chaine de bits
-	Du bit début au bit de fin (non inclus)
+	Recupere un nombre de bits dans une chaine de bits
+	Du bit debut au bit de fin (non inclus)
 */
 void recupererBits(int deb, int fin, int donnee, char *ret){
 	int i,j=0;
@@ -47,7 +51,6 @@ void recupererBits(int deb, int fin, int donnee, char *ret){
 	Convertit une chaine de caractere binaire
 	en un entier. Gere les nombres signes
 */
-
 int char2IntOps(char *str){
 	int i = 0;
 	int val = 0;
@@ -56,21 +59,30 @@ int char2IntOps(char *str){
 			if(str[i] == '1')
 				val+=pow(2, strlen(str)-1-i);
 		}
-	}
-	else{
+	}else{
 		for(i = 1; i < strlen(str); i++)
 			if(str[i] == '0')
 				val-=pow(2, strlen(str)-1-i);
 
 		val-=1;
-	}
-	return val;
+	}return val;
 }
 
+/*
+	Recupere le program counter
+	Index de la prochaine instruction a executer
+*/
 int prochaineInstruction(){
 	return lireMemoire(LireRegistre(32));
 }
 
+/*
+	Decode une instruction a partir de sa valeur entiere
+
+	Cette fonction va construire une instruction dans un format standardise
+	3 operandes et le nom de cette instruction
+	ex : ADD R1 R2 R3
+*/
 instruction decoderInstruction (int donnee){
 	// Parametres de l'instruction traduite retournee
 	instruction res;
@@ -79,17 +91,21 @@ instruction decoderInstruction (int donnee){
 
 	char code[6] = "";			// opcode de l'instruction
 	char codeSpe[6] = "";		// code special pour les instructions speciales
-	
 
 	// Recuperation de l'opcode de l'instruction placee sur les 6 derniers bits
 	recupererBits(26,6,donnee, code); 	
 	
-	if(!strcmp(code,"000000")) { 				// Si l'opcode est 000000 on sait que l'instruction est spéciale
-		recupererBits(0,6,donnee, codeSpe); 	// Recuperation du code special
+	/* ---------------------------
+		Instructions speciales
+	------------------------------
+	*/
+	if(!strcmp(code,"000000")) {
+		recupererBits(0,6,donnee, codeSpe); 					// Recuperation du code special
+		
 		if(!strcmp(codeSpe,"000000")){
 			char tmp[32] = "";
-			recupererBits(0,32,donnee,tmp);		// Recuperation du code binaire de l'instruction
-			if(tmp == "00000000000000000000000000000000"){
+			recupererBits(0,32,donnee,tmp);						// Recuperation du code binaire de l'instruction
+			if(tmp == "00000000000000000000000000000000"){		// SLL
 				res.operateur = "NOP";
 			}else{
 				oper1 = (char*) malloc(sizeof(char)*5);
@@ -101,7 +117,7 @@ instruction decoderInstruction (int donnee){
 				res.operateur = "SLL" ;
 			}
 		}
-		if(!strcmp(codeSpe,"000010")){ //SRL ou ROTR
+		if(!strcmp(codeSpe,"000010")){ 							//SRL ou ROTR
 			char tmp[32] = "";
 			recupererBits(0,32,donnee,tmp);		// Recuperation du code binaire de l'instruction
 			if(tmp[21]==0){
@@ -122,8 +138,7 @@ instruction decoderInstruction (int donnee){
 				res.operateur = "ROTR" ;
 			}
 		}
-
-		if(!strcmp(codeSpe,"100000")){
+		if(!strcmp(codeSpe,"100000")){							// ADD
 			oper1 = (char*) malloc(sizeof(char)*5);
 			oper2 = (char*) malloc(sizeof(char)*5);
 			oper3 = (char*) malloc(sizeof(char)*5);
@@ -132,7 +147,7 @@ instruction decoderInstruction (int donnee){
 			recupererBits(16,5,donnee,oper3);	// rt
 			res.operateur = "ADD" ;
 		}
-		if(!strcmp(codeSpe, "100100")){
+		if(!strcmp(codeSpe, "100100")){							// AND
 			oper1 = (char*) malloc(sizeof(char)*5);
 			oper2 = (char*) malloc(sizeof(char)*5);
 			oper3 = (char*) malloc(sizeof(char)*5);
@@ -141,7 +156,7 @@ instruction decoderInstruction (int donnee){
 			recupererBits(16,5,donnee,oper3);
 			res.operateur = "AND" ;
 		}
-		if(!strcmp(codeSpe,"011010")){ // DIV
+		if(!strcmp(codeSpe,"011010")){ 							// DIV
 			oper1 = (char*) malloc(sizeof(char)*5); // rs 
 			oper2 = (char*) malloc(sizeof(char)*5); // rt
 			oper3 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
@@ -149,28 +164,28 @@ instruction decoderInstruction (int donnee){
 			recupererBits(16,5,donnee,oper2);
 			res.operateur = "DIV" ;
 		}
-		if(!strcmp(codeSpe,"001000")){ // JR
+		if(!strcmp(codeSpe,"001000")){ 							// JR
 			oper1 = (char*) malloc(sizeof(char)*5); // rs 
 			oper2 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
 			oper3 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
 			recupererBits(21,5,donnee,oper1);
 			res.operateur = "JR" ;
 		}
-		if(!strcmp(codeSpe,"010000")){ // MFHI 
+		if(!strcmp(codeSpe,"010000")){ 							// MFHI 
 			oper1 = (char*) malloc(sizeof(char)*5);
 			oper2 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
 			oper3 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
-			recupererBits(11,5,donnee,oper1);	// rd
+			recupererBits(11,5,donnee,oper1);		// rd
 			res.operateur = "MFHI" ;
 		}
-		if(!strcmp(codeSpe,"010010")){ // MFLO
+		if(!strcmp(codeSpe,"010010")){ 							// MFLO
 			oper1 = (char*) malloc(sizeof(char)*5);
 			oper2 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
 			oper3 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
-			recupererBits(11,5,donnee,oper1);	// rd
+			recupererBits(11,5,donnee,oper1);		// rd
 			res.operateur = "MFLO" ;
 		}
-		if(!strcmp(codeSpe,"011000")){ // MULT
+		if(!strcmp(codeSpe,"011000")){ 							// MULT
 			oper1 = (char*) malloc(sizeof(char)*5); // rs 
 			oper2 = (char*) malloc(sizeof(char)*5); // rt
 			oper3 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
@@ -178,7 +193,7 @@ instruction decoderInstruction (int donnee){
 			recupererBits(16,5,donnee,oper2);
 			res.operateur = "MULT" ;
 		}
-		if(!strcmp(codeSpe,"100101")){ // OR
+		if(!strcmp(codeSpe,"100101")){ 							// OR
 			oper1 = (char*) malloc(sizeof(char)*5); // rd
 			oper2 = (char*) malloc(sizeof(char)*5); // rs
 			oper3 = (char*) malloc(sizeof(char)*5); // rt
@@ -195,9 +210,8 @@ instruction decoderInstruction (int donnee){
 			recupererBits(21,5,donnee,oper2);
 			recupererBits(16,5,donnee,oper3);
 			res.operateur = "SLT" ;
-
 		}
-		if(!strcmp(codeSpe,"100010")){ // SUB
+		if(!strcmp(codeSpe,"100010")){ 							// SUB
 			oper1 = (char*) malloc(sizeof(char)*5); // rd
 			oper2 = (char*) malloc(sizeof(char)*5); // rs
 			oper3 = (char*) malloc(sizeof(char)*5); // rt
@@ -206,7 +220,7 @@ instruction decoderInstruction (int donnee){
 			recupererBits(16,5,donnee,oper3);
 			res.operateur = "SUB" ;
 		}
-		if(!strcmp(codeSpe,"100110")){ // XOR
+		if(!strcmp(codeSpe,"100110")){ 							// XOR
 			oper1 = (char*) malloc(sizeof(char)*5); // rd
 			oper2 = (char*) malloc(sizeof(char)*5); // rs
 			oper3 = (char*) malloc(sizeof(char)*5); // rt
@@ -267,53 +281,60 @@ instruction decoderInstruction (int donnee){
 			res.operateur = "BNE" ;
 		}
 		if(!strcmp(code,"000010")){ 							// J
-			oper1 = (char*) malloc(sizeof(char)*26); // instr_index
-			oper2 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
-			oper3 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
+			oper1 = (char*) malloc(sizeof(char)*26); 	// instr_index
+			oper2 = (char*) malloc(sizeof(char)*0); 	//Parametre inutilise
+			oper3 = (char*) malloc(sizeof(char)*0); 	//Parametre inutilise
 			recupererBits(0,26,donnee,oper1);
 			res.operateur = "J" ;			
 		}
 		if(!strcmp(code,"000011")){ 							// JAL
-			oper1 = (char*) malloc(sizeof(char)*26); // instr_index
-			oper2 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
-			oper3 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
+			oper1 = (char*) malloc(sizeof(char)*26); 	// instr_index
+			oper2 = (char*) malloc(sizeof(char)*0); 	//Parametre inutilise
+			oper3 = (char*) malloc(sizeof(char)*0); 	//Parametre inutilise
 			recupererBits(0,26,donnee,oper1);
 			res.operateur = "JAL" ;
 		}
 		if(!strcmp(code,"001111")){ 							// LUI
-			oper3 = (char*) malloc(sizeof(char)*0); //Parametre inutilise
-			oper2 = (char*) malloc(sizeof(char)*16); // immediate
-			oper1 = (char*) malloc(sizeof(char)*5); // rt
+			oper3 = (char*) malloc(sizeof(char)*0); 	//Parametre inutilise
+			oper2 = (char*) malloc(sizeof(char)*16); 	// immediate
+			oper1 = (char*) malloc(sizeof(char)*5); 	// rt
 			recupererBits(16,5,donnee,oper1);
 			recupererBits(0,16,donnee,oper2);
 			res.operateur = "LUI" ;
 		}
 		if(!strcmp(code,"100011")){ 							// LW
-			oper2 = (char*) malloc(sizeof(char)*16); // offset
-			oper3 = (char*) malloc(sizeof(char)*5); // base
-			oper1 = (char*) malloc(sizeof(char)*5); // rt
+			oper2 = (char*) malloc(sizeof(char)*16); 	// offset
+			oper3 = (char*) malloc(sizeof(char)*5); 	// base
+			oper1 = (char*) malloc(sizeof(char)*5); 	// rt
 			recupererBits(0,16,donnee,oper2);
 			recupererBits(21,5,donnee,oper3);
 			recupererBits(16,5,donnee,oper1);
 			res.operateur = "LW" ;
 		}
 		if(!strcmp(code,"101011")){ 							// SW
-			oper2 = (char*) malloc(sizeof(char)*16); // offset
-			oper3 = (char*) malloc(sizeof(char)*5); // base
-			oper1 = (char*) malloc(sizeof(char)*5); // rt
+			oper2 = (char*) malloc(sizeof(char)*16); 	// offset
+			oper3 = (char*) malloc(sizeof(char)*5); 	// base
+			oper1 = (char*) malloc(sizeof(char)*5); 	// rt
 			recupererBits(0,16,donnee,oper2);
 			recupererBits(21,5,donnee,oper3);
 			recupererBits(16,5,donnee,oper1);
 			res.operateur = "SW" ;
 		}
 	}
+
+	// Construction de l'instruction a retourner
 	res.operande1 = char2IntOps(oper1);
 	res.operande2 = char2IntOps(oper2);
 	res.operande3 = char2IntOps(oper3);
 	return res;
 	 
 }
+/*
+	Execute l'instruction precedemment decodee
 
+	Cette fonction recupere les donnees dans les registres
+	et écrit le resultat dans un registre
+*/
 void executerInstruction(instruction instr){
 
 	if(strcmp(instr.operateur, "ADD") == 0){
@@ -378,9 +399,6 @@ void executerInstruction(instruction instr){
 		printf("Operation : LUI $%d,$%d\n",instr.operande1, instr.operande2);
 		EcrireRegistre(LireRegistre(instr.operande1), instr.operande2 << 16);
 	}
-	/*else if(strcmp(instr.operateur, "LW") == 0){
-		EcrireRegistre(instr.operande1, lireMemoire(LireRegistre(instr.operande3) + instr.operande2));
-	}*/
 	else if(strcmp(instr.operateur, "MFHI") == 0){
 		printf("Operation : MFHI $%d\n",instr.operande1);
 		EcrireRegistre(instr.operande1, LireRegistre(33));
@@ -427,12 +445,6 @@ void executerInstruction(instruction instr){
 		printf("Operation : ADD $%d,$%d,$%d\n",instr.operande1, instr.operande2, instr.operande3);
 		EcrireRegistre(instr.operande1, LireRegistre(instr.operande2) - LireRegistre(instr.operande3));
 	}
-	/*else if(strcmp(instr.operateur, "SW") == 0){
-		ajouterValeurMemoire(LireRegistre(instr.operande3) + instr.operande2, LireRegistre(instr.operande1));
-	}
-	else if(strcmp(instr.operateur, "SYSCALL") == 0){
-		printf("Don't know watta do\n");
-	}*/
 	else if(strcmp(instr.operateur, "XOR") == 0){
 		printf("Operation : ADD $%d,$%d,$%d\n",instr.operande1, instr.operande2, instr.operande3);
 		EcrireRegistre(instr.operande1, LireRegistre(instr.operande2) ^ LireRegistre(instr.operande3));
